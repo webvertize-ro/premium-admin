@@ -97,7 +97,7 @@ function Request({ name, email, message, date, id }) {
             <DeleteModalInner id={id} />
           </Modal.Window>
         </Modal>
-        <button>Răspunde</button>
+        {/* <button>Răspunde</button> */}
       </ActionButtons>
     </StyledRequest>
   );
