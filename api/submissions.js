@@ -22,7 +22,7 @@ export default async function handler(req, res) {
   try {
     await client.connect();
     const db = client.db('PacheteWebvertize');
-    const collection = db.collection('PachetulWebvertizeStandard');
+    const collection = db.collection('PachetulWebvertizePremium');
 
     const entries = await collection
       .find(

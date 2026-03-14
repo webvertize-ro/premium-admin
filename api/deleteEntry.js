@@ -10,7 +10,7 @@ export default async function handler(req, res) {
 
   try {
     const database = client.db('PacheteWebvertize');
-    const entries = database.collection('PachetulWebvertizeStandard');
+    const entries = database.collection('PachetulWebvertizePremium');
 
     const query = { _id: new ObjectId(id) };
     const result = await entries.deleteOne(query);
