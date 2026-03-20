@@ -2,6 +2,7 @@ import React from 'react';
 import Logo from './Logo';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
+import Logout from './chat-admin/Logout';
 
 const NavContainer = styled.div`
   /* background-color: green; */
@@ -59,14 +60,6 @@ const LogoutButton = styled.button`
 `;
 
 function Navigation() {
-  const handleLogout = () => {
-    // Remove token from localStorage
-    localStorage.removeItem('token');
-
-    // Redirect to login page
-    window.location.href = '/';
-  };
-
   return (
     <NavContainer>
       <StyledNav className="navbar navbar-expand-lg">
@@ -99,6 +92,15 @@ function Navigation() {
                   Solicitări
                 </StyledNavLink>
               </StyledLi>
+              <StyledLi StyledLiclassName="nav-item">
+                <StyledNavLink
+                  className="nav-link"
+                  aria-current="page"
+                  to="/chat"
+                >
+                  Chat Live
+                </StyledNavLink>
+              </StyledLi>
               {/* <StyledLi className="nav-item">
                 <StyledNavLink
                   className="nav-link"
@@ -109,11 +111,7 @@ function Navigation() {
                 </StyledNavLink>
               </StyledLi> */}
             </ul>
-            <div className="d-flex">
-              <LogoutButton onClick={() => handleLogout()}>
-                Deconectare
-              </LogoutButton>
-            </div>
+            <Logout />
           </div>
         </div>
       </StyledNav>
