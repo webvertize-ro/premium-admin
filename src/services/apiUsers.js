@@ -21,8 +21,6 @@ export async function getUser(id) {
     throw new Error('User could not be loaded!');
   }
 
-  console.log('data in getUser: ', data);
-
   return data;
 }
 

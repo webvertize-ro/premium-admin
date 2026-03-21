@@ -1,8 +1,6 @@
 import supabase, { supabaseUrl } from './supabase';
 
 export default async function getMessages(id) {
-  console.log('id in getMessages: ', id);
-  console.log(typeof id);
   const { data: messages, error } = await supabase
     .from('messages')
     .select('*')
@@ -13,8 +11,6 @@ export default async function getMessages(id) {
     console.error(error);
     throw new Error('Messages could not be loaded!');
   }
-
-  console.log('messages in getMessages: ', messages);
 
   return messages;
 }

@@ -5,7 +5,6 @@ import { Outlet } from 'react-router-dom';
 
 const StyledAppLayout = styled.div`
   background-color: rgba(54, 85, 104, 1);
-  height: 100vh;
   overflow: hidden;
   display: grid;
   grid-template-rows: auto 1fr auto;

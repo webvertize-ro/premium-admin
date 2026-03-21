@@ -1,5 +1,7 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+import Lightbox, { LightboxRoot } from 'yet-another-react-lightbox';
+import 'yet-another-react-lightbox/styles.css';
 
 /**
  * if image, check if there is also a message
@@ -45,6 +47,18 @@ const FormattedDate = styled.div`
 `;
 
 function Messages({ messages, user, inputRef }) {
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+
+  const imageMessages = messages.filter((img) => img.document && img.has_image);
+
+  console.log('imageMessages: ', imageMessages);
+
+  const slides = imageMessages.map((m) => ({
+    src: m.document,
+    alt: m.document_name,
+  }));
+
   function formatDate(date) {
     const dateInitial = new Date(date);
     const preparedDate = dateInitial.toLocaleDateString('ro-RO', {
@@ -72,14 +86,36 @@ function Messages({ messages, user, inputRef }) {
           {/* image + text */}
           {message.has_image && message.message && (
             <div>
-              <img src={message.document} className="img-fluid" width="120" />
+              <img
+                src={message.document}
+                className="img-fluid"
+                width="120"
+                onClick={() => {
+                  const index = imageMessages.findIndex(
+                    (m) => m.document === message.document,
+                  );
+                  setLightboxIndex(index);
+                  setLightboxOpen(true);
+                }}
+              />
               <div>{message.message}</div>
             </div>
           )}
           {/* image */}
           {message.has_image && !message.message && (
             <div>
-              <img src={message.document} className="img-fluid" width="120" />
+              <img
+                src={message.document}
+                className="img-fluid"
+                width="120"
+                onClick={() => {
+                  const index = imageMessages.findIndex(
+                    (m) => m.document === message.document,
+                  );
+                  setLightboxIndex(index);
+                  setLightboxOpen(true);
+                }}
+              />
             </div>
           )}
           {/* doc + text */}
@@ -107,6 +143,12 @@ function Messages({ messages, user, inputRef }) {
         </MessageBubble>
       ))}
       {/* <InvisibleDiv ref={inputRef} /> */}
+      <Lightbox
+        open={lightboxOpen}
+        close={() => setLightboxOpen(false)}
+        slides={slides}
+        index={lightboxIndex}
+      />
     </MessagesContainer>
   );
 }

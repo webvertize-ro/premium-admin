@@ -76,13 +76,9 @@ const SendButton = styled.button`
 `;
 
 function MessageSender({ selectedUser, mutateMsg, isSending, scrollToBottom }) {
-  console.log('scrollToBottom in MessageSender: ', scrollToBottom);
   const [attachment, setAttachment] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [attachmentHasImage, setAttachmentHasImage] = useState(null);
-  console.log('attachmentHasImage: ', attachmentHasImage);
-
-  console.log('attachment is: ', attachment);
 
   const { register, handleSubmit, reset, formState } = useForm();
 
