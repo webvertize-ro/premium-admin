@@ -11,17 +11,17 @@ import UserInfo from './UserInfo';
 
 const StyledChatWindow = styled.div`
   background-color: #fff;
-  max-height: 100%;
   display: ${(props) => (props.$selectedUser ? 'unset' : 'flex')};
+  flex: 3;
   justify-content: ${(props) => (props.$selectedUser ? 'unset' : 'center')};
   align-items: ${(props) => (props.$selectedUser ? 'unset' : 'center')};
-`;
-
-const ConversationWindow = styled.div`
+  display: grid;
   grid-template-rows: auto 1fr auto;
 `;
 
-function ChatWindow({ selectedUser, mutateMsg, onSelectedUser }) {
+const ConversationWindow = styled.div``;
+
+function ChatWindow({ selectedUser, mutateMsg, onSelectedUser, isSending }) {
   const inputRef = useRef();
 
   function scrollToBottom() {
@@ -59,6 +59,7 @@ function ChatWindow({ selectedUser, mutateMsg, onSelectedUser }) {
     select: (data) => data[0],
   });
 
+  // Scrolling to bottom on mount
   useEffect(() => {
     setTimeout(() => scrollToBottom(), 500);
   }, [selectedUser]);
@@ -74,7 +75,12 @@ function ChatWindow({ selectedUser, mutateMsg, onSelectedUser }) {
           {/* Messages */}
           <Messages messages={messages} user={user} inputRef={inputRef} />
           {/* Message Sender */}
-          <MessageSender selectedUser={selectedUser} mutateMsg={mutateMsg} />
+          <MessageSender
+            selectedUser={selectedUser}
+            mutateMsg={mutateMsg}
+            isSending={isSending}
+            scrollToBottom={scrollToBottom}
+          />
         </ConversationWindow>
       )}
     </StyledChatWindow>

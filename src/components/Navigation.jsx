@@ -2,7 +2,6 @@ import React from 'react';
 import Logo from './Logo';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
-import Logout from './chat-admin/Logout';
 
 const NavContainer = styled.div`
   /* background-color: green; */
@@ -111,7 +110,6 @@ function Navigation() {
                 </StyledNavLink>
               </StyledLi> */}
             </ul>
-            <Logout />
           </div>
         </div>
       </StyledNav>

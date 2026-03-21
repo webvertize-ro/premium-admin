@@ -9,11 +9,13 @@ import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import previewImgTest from '../../assets/preview_image.avif';
 import { useState } from 'react';
+import LoadingSpinner from './LoadingSpinner';
 
 const StyledForm = styled.form`
   display: grid;
   grid-template-columns: 1fr 12fr 1fr;
   gap: 0.5rem;
+  border-top: 1px solid black;
 `;
 
 const PreviewFile = styled.div`
@@ -68,11 +70,17 @@ const SendButton = styled.button`
   border: none;
   border: 1px solid lime;
   font-size: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
-function MessageSender({ selectedUser, mutateMsg }) {
+function MessageSender({ selectedUser, mutateMsg, isSending, scrollToBottom }) {
+  console.log('scrollToBottom in MessageSender: ', scrollToBottom);
   const [attachment, setAttachment] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
+  const [attachmentHasImage, setAttachmentHasImage] = useState(null);
+  console.log('attachmentHasImage: ', attachmentHasImage);
 
   console.log('attachment is: ', attachment);
 
@@ -85,6 +93,7 @@ function MessageSender({ selectedUser, mutateMsg }) {
   }
 
   function handleFileSelect(file) {
+    setAttachmentHasImage(file?.type?.startsWith('image/') || false);
     if (!file) return;
     setAttachment(file);
     // create a URL if the file is an image
@@ -101,9 +110,11 @@ function MessageSender({ selectedUser, mutateMsg }) {
       ...data,
       user_id: selectedUser,
       sender_type: 'admin',
-      document: data.document[0],
+      document: attachment,
     };
     reset();
+    setAttachment(null);
+    setTimeout(() => scrollToBottom(), attachmentHasImage ? 2000 : 1500);
     mutateMsg(message);
   }
 
@@ -124,7 +135,7 @@ function MessageSender({ selectedUser, mutateMsg }) {
           {/* image || document */}
           {attachment?.type.startsWith('image/') ? (
             <PreviewImgContainer>
-              <PreviewImg src={previewUrl} width="100" className="img-fluid" />
+              <PreviewImg src={previewUrl} width="20" className="img-fluid" />
               <div>{attachment.name}</div>
             </PreviewImgContainer>
           ) : (
@@ -148,7 +159,11 @@ function MessageSender({ selectedUser, mutateMsg }) {
         />
         <Input type="text" {...register('message')} className="form-control" />
         <SendButton type="submit">
-          <FontAwesomeIcon icon={faPaperPlane} />
+          {isSending ? (
+            <LoadingSpinner color="dark" />
+          ) : (
+            <FontAwesomeIcon icon={faPaperPlane} />
+          )}
         </SendButton>
       </StyledForm>
     </div>

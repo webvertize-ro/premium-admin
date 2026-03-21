@@ -18,11 +18,10 @@ import styled from 'styled-components';
 const MessagesContainer = styled.div`
   display: flex;
   flex-direction: column;
+  max-height: 60vh;
   gap: 0.5rem;
   padding: 1rem;
   overflow-y: scroll;
-  height: 500px;
-  border: 2px solid lime;
 `;
 
 const InvisibleDiv = styled.div``;
@@ -86,14 +85,18 @@ function Messages({ messages, user, inputRef }) {
           {/* doc + text */}
           {message.document && !message.has_image && message.message && (
             <div>
-              <a href={message.document}>{message.document_name}</a>
+              <a href={message.document} target="_blank">
+                {message.document_name}
+              </a>
               <div>{message.message}</div>
             </div>
           )}
           {/* doc */}
           {message.document && !message.has_image && !message.message && (
             <div>
-              <a href={message.document}>{message.document_name}</a>
+              <a href={message.document} target="_blank">
+                {message.document_name}
+              </a>
             </div>
           )}
           {/* text */}

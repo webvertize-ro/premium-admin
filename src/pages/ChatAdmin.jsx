@@ -9,7 +9,6 @@ import ChatWindow from '../components/chat-admin/ChatWindow';
 import Chat from '../components/chat-admin/Chat';
 
 const StyledChatAdmin = styled.div`
-  border: 2px solid lime;
   height: 100%;
 `;
 

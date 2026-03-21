@@ -9,10 +9,9 @@ import { sendMessage } from '../../services/apiMessages';
 
 const StyledChat = styled.div`
   display: grid;
-  grid-template-columns: 1fr 2fr;
-  grid-template-rows: 1fr;
+  grid-template-columns: 1fr 3fr;
+  align-self: stretch;
   height: 100%;
-  border: 2px solid red;
 `;
 
 function Chat() {
@@ -58,6 +57,7 @@ function Chat() {
         selectedUser={selectedUser}
         onSelectedUser={setSelectedUser}
         mutateMsg={mutateMsg}
+        isSending={isSending}
       />
     </StyledChat>
   );

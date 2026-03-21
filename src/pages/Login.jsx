@@ -1,57 +1,88 @@
-import { useState } from 'react';
-import { login } from '../services/apiAuth';
-import { useLogin } from '../services/useLogin';
+import styled from 'styled-components';
+import { logUserIn } from '../services/apiAuth';
+import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import LoadingSpinner from '../components/chat-admin/LoadingSpinner';
+
+/**
+ * 
+ * logUserIn expects an object which looks like this: 
+ * {
+      email: 'admin@firma.ro',
+      password: 'test1234',
+    }
+ * 
+ * 
+ */
+
+const StyledLogin = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+`;
+
+const StyledButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 
 function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const { register, reset, handleSubmit } = useForm();
+  const navigate = useNavigate();
 
-  const { login, isLoading } = useLogin();
+  const queryClient = useQueryClient();
+  const { mutate: login, isPending } = useMutation({
+    mutationFn: logUserIn,
+    onSuccess: (data) => {
+      queryClient.setQueryData(['session'], data.user);
+      navigate('/chat');
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Invalid email or password');
+    },
+  });
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    if (!email || !password) return;
-    login(
-      { email, password },
-      {
-        onSettled: () => {
-          setEmail('');
-          setPassword('');
-        },
-      },
-    );
+  function handleLogin(data) {
+    login(data);
   }
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="email">Email</label>
+    <StyledLogin>
+      <h3>Log in</h3>
+      <form onSubmit={handleSubmit(handleLogin)}>
+        <div className="mb-3">
+          <label htmlFor="email" className="form-label">
+            Email
+          </label>
           <input
             type="email"
             name="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            className="form-control"
+            {...register('email')}
           />
         </div>
-        <div>
-          <label htmlFor="password">Password</label>
+        <div className="mb-3">
+          <label htmlFor="password" className="form-label">
+            Password
+          </label>
           <input
             type="password"
             name="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            className="form-control"
+            {...register('password')}
           />
         </div>
-        <div>
-          <button type="submit" disabled={isLoading}>
-            {!isLoading ? 'Log in' : 'Log in...'}
-          </button>
-        </div>
+        <StyledButton type="submit" className="btn btn-primary">
+          {isPending && <LoadingSpinner size="sm" />}
+          Log in
+        </StyledButton>
       </form>
-    </div>
+    </StyledLogin>
   );
 }
 

@@ -5,12 +5,13 @@ import LoadingSpinner from './LoadingSpinner';
 
 const StyledVerticalNavbar = styled.div`
   display: flex;
+  flex: 1;
   flex-direction: column;
   justify-content: ${(props) => (props.$loading ? 'center' : 'unset')};
   align-items: ${(props) => (props.$loading ? 'center' : 'unset')};
   gap: 0.25rem;
   background-color: #fff;
-  border: 1px solid black;
+  border-right: 1px solid black;
   height: 100%;
 `;
 
