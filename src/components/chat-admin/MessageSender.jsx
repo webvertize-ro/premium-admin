@@ -80,6 +80,8 @@ function MessageSender({ selectedUser, mutateMsg, isSending, scrollToBottom }) {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [attachmentHasImage, setAttachmentHasImage] = useState(null);
 
+  console.log('attachment is: ', attachment);
+
   const { register, handleSubmit, reset, formState } = useForm();
 
   const { errors } = formState;
@@ -92,6 +94,7 @@ function MessageSender({ selectedUser, mutateMsg, isSending, scrollToBottom }) {
     setAttachmentHasImage(file?.type?.startsWith('image/') || false);
     if (!file) return;
     setAttachment(file);
+
     // create a URL if the file is an image
     if (file.type.startsWith('image/')) {
       const fileURL = URL.createObjectURL(file);
@@ -121,17 +124,13 @@ function MessageSender({ selectedUser, mutateMsg, isSending, scrollToBottom }) {
     <div>
       {attachment && (
         <PreviewFile>
-          <StyledButton
-            onClick={() => {
-              return setAttachment(null);
-            }}
-          >
+          <StyledButton onClick={() => setAttachment(null)}>
             <FontAwesomeIcon icon={faXmark} />
           </StyledButton>
           {/* image || document */}
           {attachment?.type.startsWith('image/') ? (
             <PreviewImgContainer>
-              <PreviewImg src={previewUrl} width="20" className="img-fluid" />
+              <PreviewImg src={previewUrl} width="60" className="img-fluid" />
               <div>{attachment.name}</div>
             </PreviewImgContainer>
           ) : (
@@ -151,7 +150,10 @@ function MessageSender({ selectedUser, mutateMsg, isSending, scrollToBottom }) {
           id="document"
           name="document"
           {...register('document')}
-          onChange={(e) => handleFileSelect(e.target.files[0])}
+          onChange={(e) => {
+            handleFileSelect(e.target.files[0]);
+            e.target.value = null;
+          }}
         />
         <Input type="text" {...register('message')} className="form-control" />
         <SendButton type="submit">

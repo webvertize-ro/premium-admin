@@ -12,6 +12,7 @@ const StyledChat = styled.div`
   grid-template-columns: 1fr 3fr;
   align-self: stretch;
   height: 100%;
+  height: 600px;
 `;
 
 function Chat() {

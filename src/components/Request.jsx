@@ -45,16 +45,16 @@ const StyledButton = styled.button`
   background-color: #88304e;
 `;
 
-function Request({ name, email, message, date, id, onDelete }) {
-  const formattedDate = new Intl.DateTimeFormat('ro-RO', {
-    timeZone: 'Europe/Bucharest',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  }).format(new Date(date));
+function Request({ name, email, message, date, id, onDelete, mutateSub }) {
+  // const formattedDate = new Intl.DateTimeFormat('ro-RO', {
+  //   timeZone: 'Europe/Bucharest',
+  //   year: 'numeric',
+  //   month: '2-digit',
+  //   day: '2-digit',
+  //   hour: '2-digit',
+  //   minute: '2-digit',
+  //   second: '2-digit',
+  // }).format(new Date(date));
 
   return (
     <StyledRequest className="mb-3">
@@ -81,7 +81,7 @@ function Request({ name, email, message, date, id, onDelete }) {
           <span>
             <strong>Dată: </strong>
           </span>
-          <span>{formattedDate}</span>
+          {/* <span>{formattedDate}</span> */}
         </StyledLi>
       </StyledUl>
       <ActionButtons>
@@ -94,7 +94,7 @@ function Request({ name, email, message, date, id, onDelete }) {
             title="Confirmare acțiune"
             size="small"
           >
-            <DeleteModalInner id={id} onDelete={onDelete} />
+            <DeleteModalInner id={id} mutateSub={mutateSub} />
           </Modal.Window>
         </Modal>
         {/* <button>Răspunde</button> */}

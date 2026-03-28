@@ -10,15 +10,21 @@ export async function getSubmissions() {
   return submissions;
 }
 
-// Subscription to submissions
+// Delete a submission based on the id
+export async function deleteSubmission(id) {
+  const { error } = await supabase.from('submissions').delete().eq('id', id);
 
+  if (error) throw new Error(error.message);
+}
+
+// Subscription to submissions
 export function subscribeToMessages(callback) {
   return supabase
     .channel('submissions-channel')
     .on(
       'postgres_changes',
       {
-        event: 'INSERT',
+        event: '*',
         schema: 'public',
         table: 'submissions',
       },

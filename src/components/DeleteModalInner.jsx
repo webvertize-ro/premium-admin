@@ -31,27 +31,7 @@ const StyledP = styled.p`
   text-align: center;
 `;
 
-function DeleteModalInner({ onCloseModal, id, onDelete }) {
-  async function deleteEntry(id) {
-    try {
-      const res = await fetch('/api/deleteEntry', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id }),
-      });
-
-      if (res.ok) {
-        onDelete(id);
-      }
-
-      if (res.status === 204) {
-        console.log('the entry was indeed deleted');
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
+function DeleteModalInner({ onCloseModal, id, mutateSub }) {
   return (
     <StyledDeleteModalInner>
       <StyledH5>
@@ -65,8 +45,8 @@ function DeleteModalInner({ onCloseModal, id, onDelete }) {
         <StyledButton
           action="delete"
           onClick={() => {
-            deleteEntry(id);
-            onCloseModal?.();
+            mutateSub(id);
+            onCloseModal();
           }}
         >
           Șterge
