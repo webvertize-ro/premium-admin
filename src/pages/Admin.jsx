@@ -45,7 +45,6 @@ export default function Admin() {
     const channel = subscribeToMessages((payload) => {
       if (payload.eventType === 'INSERT') {
         queryClient.setQueryData(['submissions'], (old = []) => {
-          console.log('old in subscribeToMessages is: ', old);
           return [...old, payload.new];
         });
       }

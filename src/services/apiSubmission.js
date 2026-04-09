@@ -1,9 +1,11 @@
 import supabase from './supabase';
+import { WEBSITE_ID } from '../../config';
 
 export async function getSubmissions() {
   let { data: submissions, error } = await supabase
     .from('submissions')
-    .select('*');
+    .select('*')
+    .eq('website_id', WEBSITE_ID);
 
   if (error) throw new Error(error.message);
 
