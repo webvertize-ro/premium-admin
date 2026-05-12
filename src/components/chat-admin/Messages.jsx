@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
-import styled from 'styled-components';
-import Lightbox, { LightboxRoot } from 'yet-another-react-lightbox';
-import 'yet-another-react-lightbox/styles.css';
+import { useEffect, useRef, useState } from "react";
+import styled from "styled-components";
+import Lightbox, { LightboxRoot } from "yet-another-react-lightbox";
+import "yet-another-react-lightbox/styles.css";
 
 /**
  * if image, check if there is also a message
@@ -30,8 +30,8 @@ const InvisibleDiv = styled.div``;
 
 const MessageBubble = styled.div`
   background-color: ${(props) =>
-    props.senderType === 'user' ? 'lightblue' : 'lightgreen'};
-  align-self: ${(props) => (props.$senderType === 'user' ? 'start' : 'end')};
+    props.senderType === "user" ? "lightblue" : "lightgreen"};
+  align-self: ${(props) => (props.$senderType === "user" ? "start" : "end")};
   padding: 0.5rem;
   border-radius: 0.5rem;
 `;
@@ -52,7 +52,7 @@ function Messages({ messages, user, inputRef }) {
 
   const imageMessages = messages.filter((img) => img.document && img.has_image);
 
-  console.log('imageMessages: ', imageMessages);
+  console.log("imageMessages: ", imageMessages);
 
   const slides = imageMessages.map((m) => ({
     src: m.document,
@@ -61,13 +61,13 @@ function Messages({ messages, user, inputRef }) {
 
   function formatDate(date) {
     const dateInitial = new Date(date);
-    const preparedDate = dateInitial.toLocaleDateString('ro-RO', {
+    const preparedDate = dateInitial.toLocaleDateString("ro-RO", {
       hour12: true,
-      timeZone: 'Europe/Bucharest',
-      month: 'short',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
+      timeZone: "Europe/Bucharest",
+      month: "short",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
     });
 
     return preparedDate;
@@ -81,7 +81,7 @@ function Messages({ messages, user, inputRef }) {
           key={message.created_at}
         >
           <Username>
-            {user?.sender_type === 'admin' ? 'Admin' : user?.name}
+            {user?.sender_type === "admin" ? "Admin" : user?.name}
           </Username>
           {/* image + text */}
           {message.has_image && message.message && (

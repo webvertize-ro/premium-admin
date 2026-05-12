@@ -1,7 +1,7 @@
-import React from 'react';
-import Logo from './Logo';
-import styled from 'styled-components';
-import { NavLink } from 'react-router-dom';
+import React from "react";
+import Logo from "./Logo";
+import styled from "styled-components";
+import { NavLink } from "react-router-dom";
 
 const NavContainer = styled.div`
   /* background-color: green; */
@@ -98,6 +98,15 @@ function Navigation() {
                   to="/chat"
                 >
                   Chat Live
+                </StyledNavLink>
+              </StyledLi>
+              <StyledLi StyledLiclassName="nav-item">
+                <StyledNavLink
+                  className="nav-link"
+                  aria-current="page"
+                  to="/blog"
+                >
+                  Administrare Blog
                 </StyledNavLink>
               </StyledLi>
               {/* <StyledLi className="nav-item">

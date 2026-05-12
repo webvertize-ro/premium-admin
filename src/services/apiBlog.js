@@ -55,3 +55,22 @@ export async function deleteBlogPost(id) {
 
   if (error) throw new Error(error.message);
 }
+
+export async function uploadBlogImage({ file, websiteId, slug }) {
+  const filePath = `${websiteId}/blog/${slug}`;
+
+  // delete existing if any
+  await supabase.storage.from("website-assets").remove([filePath]);
+
+  const { error: uploadError } = await supabase.storage
+    .from("website-assets")
+    .upload(filePath, file);
+
+  if (uploadError) throw new Error(uploadError.message);
+
+  const { data: urlData } = supabase.storage
+    .from("website-assets")
+    .getPublicUrl(filePath);
+
+  return `${urlData.publicUrl}?t=${Date.now()}`;
+}
