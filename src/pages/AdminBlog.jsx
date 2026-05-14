@@ -1,16 +1,16 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useBlogPosts, useDeleteBlogPost } from "../hooks/useBlogPosts";
 import BlogPostForm from "../components/BlogPostForm";
-import toast from "react-hot-toast";
 import ModalNew from "../components/ModalNew";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeadphonesSimple, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import DeleteConfirm from "../components/DeleteConfirm";
 
 const StyledAdminBlog = styled.div`
   padding-top: 2rem;
   color: #fff;
+  min-height: 100vh;
 `;
 
 const AddNewArticle = styled.button`
@@ -146,6 +146,11 @@ function AdminBlog() {
             </ActionButtonsContainer>
           </Post>
         ))}
+        {posts.length === 0 && (
+          <div className="d-flex">
+            <h4>Momentan nu există postări!</h4>
+          </div>
+        )}
       </Posts>
       <ModalNew
         isOpen={open}

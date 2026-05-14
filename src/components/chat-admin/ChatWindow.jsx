@@ -1,25 +1,41 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import styled from 'styled-components';
-import getMessages, { subscribeToMessages } from '../../services/apiMessages';
-import { getUser, subscribeToUsers } from '../../services/apiUsers';
-import { useEffect, useRef, useState } from 'react';
-import supabase from '../../services/supabase';
-import { useForm } from 'react-hook-form';
-import MessageSender from './MessageSender';
-import Messages from './Messages';
-import UserInfo from './UserInfo';
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import styled from "styled-components";
+import getMessages, { subscribeToMessages } from "../../services/apiMessages";
+import { getUser } from "../../services/apiUsers";
+import { useEffect, useRef } from "react";
+import supabase from "../../services/supabase";
+import MessageSender from "./MessageSender";
+import Messages from "./Messages";
+import UserInfo from "./UserInfo";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faComments } from "@fortawesome/free-solid-svg-icons";
 
 const StyledChatWindow = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   background-color: #fff;
-  display: ${(props) => (props.$selectedUser ? 'unset' : 'flex')};
-  flex: 3;
-  justify-content: ${(props) => (props.$selectedUser ? 'unset' : 'center')};
-  align-items: ${(props) => (props.$selectedUser ? 'unset' : 'center')};
-  display: grid;
-  grid-template-rows: auto 1fr auto;
 `;
 
-const ConversationWindow = styled.div``;
+const IntroMessage = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 1.2rem;
+  gap: 1rem;
+`;
+
+const StyledFontAwesomeIcon = styled(FontAwesomeIcon)`
+  font-size: 2rem;
+  color: #0f828c;
+`;
+
+const ConversationWindow = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+`;
 
 function ChatWindow({ selectedUser, mutateMsg, onSelectedUser, isSending }) {
   const inputRef = useRef();
@@ -28,7 +44,7 @@ function ChatWindow({ selectedUser, mutateMsg, onSelectedUser, isSending }) {
     if (inputRef.current) {
       inputRef.current.scrollTo({
         top: inputRef.current.scrollHeight,
-        behavior: 'smooth',
+        behavior: "smooth",
       });
     }
   }
@@ -36,7 +52,7 @@ function ChatWindow({ selectedUser, mutateMsg, onSelectedUser, isSending }) {
   const queryClient = useQueryClient();
   // Retrieving the messages as per the "selectedUser" (user id) [Initial fetch with React Query]
   const { data: messages = [], isPending } = useQuery({
-    queryKey: ['messages', selectedUser],
+    queryKey: ["messages", selectedUser],
     queryFn: () => getMessages(selectedUser),
     enabled: !!selectedUser,
   });
@@ -44,7 +60,7 @@ function ChatWindow({ selectedUser, mutateMsg, onSelectedUser, isSending }) {
   // live-subscription for the messages
   useEffect(() => {
     const channel = subscribeToMessages((payload) => {
-      queryClient.setQueryData(['messages', selectedUser], (old = []) => {
+      queryClient.setQueryData(["messages", selectedUser], (old = []) => {
         return [...old, payload.new];
       });
     });
@@ -54,7 +70,7 @@ function ChatWindow({ selectedUser, mutateMsg, onSelectedUser, isSending }) {
   }, [queryClient, selectedUser]);
 
   const { data: user, isPending: isLoading } = useQuery({
-    queryKey: ['user', selectedUser],
+    queryKey: ["user", selectedUser],
     queryFn: () => getUser(selectedUser),
     select: (data) => data[0],
   });
@@ -67,7 +83,10 @@ function ChatWindow({ selectedUser, mutateMsg, onSelectedUser, isSending }) {
   return (
     <StyledChatWindow $selectedUser={selectedUser}>
       {!selectedUser && (
-        <div>Alegeți o conversație din partea stângă pentru a începe!</div>
+        <IntroMessage>
+          <StyledFontAwesomeIcon icon={faComments} />
+          Alegeți o conversație din partea stângă pentru a începe!
+        </IntroMessage>
       )}
       {selectedUser && (
         <ConversationWindow>

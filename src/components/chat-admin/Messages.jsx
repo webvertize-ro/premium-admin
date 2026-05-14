@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import Lightbox, { LightboxRoot } from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
@@ -22,15 +22,17 @@ const MessagesContainer = styled.div`
   flex-direction: column;
   max-height: 60vh;
   gap: 0.5rem;
-  padding: 1rem;
+  padding: 1.5rem;
   overflow-y: scroll;
+  height: 100%;
+  background-color: #f0f0f0;
 `;
 
 const InvisibleDiv = styled.div``;
 
 const MessageBubble = styled.div`
   background-color: ${(props) =>
-    props.senderType === "user" ? "lightblue" : "lightgreen"};
+    props.$senderType === "admin" ? "#468432" : "#81A6C6"};
   align-self: ${(props) => (props.$senderType === "user" ? "start" : "end")};
   padding: 0.5rem;
   border-radius: 0.5rem;
@@ -39,6 +41,10 @@ const MessageBubble = styled.div`
 const Username = styled.div`
   font-weight: 700;
   font-size: 0.9rem;
+`;
+
+const StyledImg = styled.img`
+  cursor: pointer;
 `;
 
 const FormattedDate = styled.div`
@@ -51,8 +57,6 @@ function Messages({ messages, user, inputRef }) {
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
   const imageMessages = messages.filter((img) => img.document && img.has_image);
-
-  console.log("imageMessages: ", imageMessages);
 
   const slides = imageMessages.map((m) => ({
     src: m.document,
@@ -86,7 +90,7 @@ function Messages({ messages, user, inputRef }) {
           {/* image + text */}
           {message.has_image && message.message && (
             <div>
-              <img
+              <StyledImg
                 src={message.document}
                 className="img-fluid"
                 width="120"
@@ -104,7 +108,7 @@ function Messages({ messages, user, inputRef }) {
           {/* image */}
           {message.has_image && !message.message && (
             <div>
-              <img
+              <StyledImg
                 src={message.document}
                 className="img-fluid"
                 width="120"

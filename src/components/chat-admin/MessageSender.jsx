@@ -3,26 +3,29 @@ import {
   faPaperclip,
   faPaperPlane,
   faXmark,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useForm } from 'react-hook-form';
-import styled from 'styled-components';
-import previewImgTest from '../../assets/preview_image.avif';
-import { useState } from 'react';
-import LoadingSpinner from './LoadingSpinner';
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useForm } from "react-hook-form";
+import styled from "styled-components";
+import { useState } from "react";
+import LoadingSpinner from "./LoadingSpinner";
+
+const StyledMessageSender = styled.div`
+  background-color: #144272;
+  color: #fff;
+  padding: 0.5rem;
+`;
 
 const StyledForm = styled.form`
   display: grid;
   grid-template-columns: 1fr 12fr 1fr;
   gap: 0.5rem;
-  border-top: 1px solid black;
 `;
 
 const PreviewFile = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 1px solid orange;
   padding: 0.5rem;
 `;
 
@@ -58,7 +61,6 @@ const FileLabel = styled.label`
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid lime;
 `;
 
 const FileInput = styled.input`
@@ -68,19 +70,17 @@ const FileInput = styled.input`
 const SendButton = styled.button`
   background-color: transparent;
   border: none;
-  border: 1px solid lime;
   font-size: 1.5rem;
   display: flex;
   justify-content: center;
   align-items: center;
+  color: #fff;
 `;
 
 function MessageSender({ selectedUser, mutateMsg, isSending, scrollToBottom }) {
   const [attachment, setAttachment] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [attachmentHasImage, setAttachmentHasImage] = useState(null);
-
-  console.log('attachment is: ', attachment);
 
   const { register, handleSubmit, reset, formState } = useForm();
 
@@ -91,12 +91,12 @@ function MessageSender({ selectedUser, mutateMsg, isSending, scrollToBottom }) {
   }
 
   function handleFileSelect(file) {
-    setAttachmentHasImage(file?.type?.startsWith('image/') || false);
+    setAttachmentHasImage(file?.type?.startsWith("image/") || false);
     if (!file) return;
     setAttachment(file);
 
     // create a URL if the file is an image
-    if (file.type.startsWith('image/')) {
+    if (file.type.startsWith("image/")) {
       const fileURL = URL.createObjectURL(file);
       setPreviewUrl(fileURL);
     } else {
@@ -108,9 +108,11 @@ function MessageSender({ selectedUser, mutateMsg, isSending, scrollToBottom }) {
     const message = {
       ...data,
       user_id: selectedUser,
-      sender_type: 'admin',
+      sender_type: "admin",
       document: attachment,
     };
+
+    console.log("data in MessageSender: ", message);
     reset();
     setAttachment(null);
     setTimeout(() => scrollToBottom(), attachmentHasImage ? 2000 : 1500);
@@ -121,20 +123,20 @@ function MessageSender({ selectedUser, mutateMsg, isSending, scrollToBottom }) {
     console.log(errors);
   }
   return (
-    <div>
+    <StyledMessageSender>
       {attachment && (
         <PreviewFile>
           <StyledButton onClick={() => setAttachment(null)}>
             <FontAwesomeIcon icon={faXmark} />
           </StyledButton>
           {/* image || document */}
-          {attachment?.type.startsWith('image/') ? (
+          {attachment?.type.startsWith("image/") ? (
             <PreviewImgContainer>
               <PreviewImg src={previewUrl} width="60" className="img-fluid" />
               <div>{attachment.name}</div>
             </PreviewImgContainer>
           ) : (
-            <Document href={'cool_file.pdf'}>
+            <Document href={"cool_file.pdf"}>
               <StyledFontAwesomeIcon icon={faFile} />
               <div>{attachment.name}</div>
             </Document>
@@ -149,13 +151,18 @@ function MessageSender({ selectedUser, mutateMsg, isSending, scrollToBottom }) {
           type="file"
           id="document"
           name="document"
-          {...register('document')}
+          {...register("document")}
           onChange={(e) => {
             handleFileSelect(e.target.files[0]);
             e.target.value = null;
           }}
         />
-        <Input type="text" {...register('message')} className="form-control" />
+        <Input
+          type="text"
+          {...register("message")}
+          className="form-control"
+          placeholder="Scrieți răspunsul aici..."
+        />
         <SendButton type="submit">
           {isSending ? (
             <LoadingSpinner color="dark" />
@@ -164,7 +171,7 @@ function MessageSender({ selectedUser, mutateMsg, isSending, scrollToBottom }) {
           )}
         </SendButton>
       </StyledForm>
-    </div>
+    </StyledMessageSender>
   );
 }
 

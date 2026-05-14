@@ -1,12 +1,15 @@
-import { faUser, faXmark } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import styled from 'styled-components';
+import { faPhone, faUser, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import styled from "styled-components";
 
 const StyledUserInfo = styled.div`
   display: grid;
   grid-template-columns: auto 1fr auto;
   gap: 0.5rem;
-  border-bottom: 1px solid black;
+  border-bottom: 2px solid #27374d;
+  padding: 0.5rem;
+  background-color: #2c74b3;
+  color: #fff;
 `;
 
 const UserIcon = styled.div`
@@ -17,15 +20,29 @@ const UserIcon = styled.div`
   color: #fff;
   border-radius: 50%;
   padding: 0.5rem;
+  height: 45px;
+  width: 45px;
 `;
 
 const StyledFontAwesomeIcon = styled(FontAwesomeIcon)`
   font-size: 1.2rem;
 `;
 
+const StyledFontAwesomeIcon2 = styled(FontAwesomeIcon)`
+  color: #fff;
+`;
+
 const UserDetails = styled.div`
   display: flex;
   flex-direction: column;
+`;
+
+const Username = styled.div``;
+
+const PhoneNumber = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 `;
 
 const ClosingButton = styled.button`
@@ -40,11 +57,16 @@ function UserInfo({ user, onSelectedUser }) {
         <StyledFontAwesomeIcon icon={faUser} />
       </UserIcon>
       <UserDetails>
-        <div>{user?.name}</div>
-        <div>{user?.phone_number}</div>
+        <Username>
+          <strong>{user?.name}</strong>
+        </Username>
+        <PhoneNumber>
+          <FontAwesomeIcon icon={faPhone} />
+          {user?.phone_number}
+        </PhoneNumber>
       </UserDetails>
       <ClosingButton onClick={() => onSelectedUser(null)}>
-        <FontAwesomeIcon icon={faXmark} />
+        <StyledFontAwesomeIcon2 icon={faXmark} />
       </ClosingButton>
     </StyledUserInfo>
   );
