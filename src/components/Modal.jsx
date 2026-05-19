@@ -1,5 +1,5 @@
-import { faXmark } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   cloneElement,
   createContext,
@@ -7,19 +7,19 @@ import {
   useEffect,
   useRef,
   useState,
-} from 'react';
-import { createPortal } from 'react-dom';
-import styled from 'styled-components';
-import { useOutsideClick } from '../hooks/useOutsideClick';
+} from "react";
+import { createPortal } from "react-dom";
+import styled from "styled-components";
+import { useOutsideClick } from "../hooks/useOutsideClick";
 
 const StyledModal = styled.div`
-  max-width: ${(props) => (props.size === 'small' ? '300px' : 'unset')};
+  width: ${(props) => (props.size === "small" ? "300px" : "450px")};
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: ${(props) =>
-    props.bgColor ? props.bgColor : 'rgba(74, 112, 137, 0.75)'};
+    props.bgColor ? props.bgColor : "rgba(74, 112, 137, 0.75)"};
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(8.7px);
   -webkit-backdrop-filter: blur(8.7px);
@@ -106,15 +106,15 @@ const Button = styled.button`
 const ModalContext = createContext();
 
 function Modal({ children }) {
-  const [openName, setOpenName] = useState('');
+  const [openName, setOpenName] = useState("");
 
-  const close = () => setOpenName('');
+  const close = () => setOpenName("");
   const open = setOpenName;
 
   // Disable scrolling when the modal is open
   useEffect(() => {
-    if (openName) document.body.style.overflow = 'hidden';
-    else document.body.style.overflow = 'auto';
+    if (openName) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = "auto";
   }, [openName]);
 
   return (
@@ -133,7 +133,7 @@ function Open({ children, opens: opensWindowName }) {
 function Window({
   children,
   name,
-  title = 'Solicită o ofertă',
+  title = "Solicită o ofertă",
   lightboxOpen,
   bgColor,
   size,
