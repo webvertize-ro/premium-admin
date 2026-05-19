@@ -1,12 +1,12 @@
 import supabase from "./supabase";
 import { WEBSITE_ID } from "../../config";
 
-export async function getBlogPosts() {
+export async function getBlogPosts({ ascending = false } = {}) {
   const { data, error } = await supabase
     .from("blog_posts")
     .select("*")
     .eq("website_id", WEBSITE_ID)
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending });
 
   if (error) throw new Error(error.message);
   return data;

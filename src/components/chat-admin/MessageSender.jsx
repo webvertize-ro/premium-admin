@@ -61,6 +61,9 @@ const FileLabel = styled.label`
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: #132440;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
 `;
 
 const FileInput = styled.input`
@@ -75,6 +78,9 @@ const SendButton = styled.button`
   justify-content: center;
   align-items: center;
   color: #fff;
+  background-color: #132440;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
 `;
 
 function MessageSender({ selectedUser, mutateMsg, isSending, scrollToBottom }) {
@@ -112,7 +118,6 @@ function MessageSender({ selectedUser, mutateMsg, isSending, scrollToBottom }) {
       document: attachment,
     };
 
-    console.log("data in MessageSender: ", message);
     reset();
     setAttachment(null);
     setTimeout(() => scrollToBottom(), attachmentHasImage ? 2000 : 1500);

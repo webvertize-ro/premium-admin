@@ -7,10 +7,10 @@ import {
   deleteBlogPost,
 } from "../services/apiBlog";
 
-export function useBlogPosts() {
+export function useBlogPosts(ascending = false) {
   return useQuery({
-    queryKey: ["blog_posts"],
-    queryFn: getBlogPosts,
+    queryKey: ["blog_posts", ascending],
+    queryFn: () => getBlogPosts({ ascending }),
   });
 }
 

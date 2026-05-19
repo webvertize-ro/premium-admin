@@ -16,7 +16,6 @@ const StyledChat = styled.div`
 
 function Chat() {
   const [selectedUser, setSelectedUser] = useState(null);
-  console.log("selectedUser in Chat: ", selectedUser);
   const queryClient = useQueryClient();
 
   // Initial fetch with React Query (for users)

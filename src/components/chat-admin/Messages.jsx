@@ -23,7 +23,7 @@ const MessagesContainer = styled.div`
   max-height: 60vh;
   gap: 0.5rem;
   padding: 1.5rem;
-  overflow-y: scroll;
+  overflow-y: auto;
   height: 100%;
   background-color: #f0f0f0;
 `;
@@ -32,10 +32,11 @@ const InvisibleDiv = styled.div``;
 
 const MessageBubble = styled.div`
   background-color: ${(props) =>
-    props.$senderType === "admin" ? "#468432" : "#81A6C6"};
+    props.$senderType === "admin" ? "#468432" : "#16476A"};
   align-self: ${(props) => (props.$senderType === "user" ? "start" : "end")};
   padding: 0.5rem;
   border-radius: 0.5rem;
+  color: #fff;
 `;
 
 const Username = styled.div`

@@ -4,7 +4,14 @@ import BlogPostForm from "../components/BlogPostForm";
 import ModalNew from "../components/ModalNew";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowDownShortWide,
+  faArrowDownWideShort,
+  faArrowUpWideShort,
+  faPlus,
+  faSortDown,
+  faSortUp,
+} from "@fortawesome/free-solid-svg-icons";
 import DeleteConfirm from "../components/DeleteConfirm";
 
 const StyledAdminBlog = styled.div`
@@ -26,11 +33,33 @@ const AddNewArticle = styled.button`
   font-weight: bold;
 `;
 
+const SortingButton = styled.button`
+  display: flex;
+  gap: 0.25rem;
+  border: none;
+  background-color: #4e9f3d;
+  color: #fff;
+  font-size: 1.1rem;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+`;
+
+const SortingButtonInner = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
 const Posts = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
   padding: 3rem 0;
+`;
+
+const SortingButtonContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
 `;
 
 const Post = styled.div`
@@ -72,7 +101,10 @@ const DeleteButton = styled.button`
 `;
 
 function AdminBlog() {
-  const { data: posts, isLoading } = useBlogPosts();
+  const [ascending, setAscending] = useState(false);
+
+  const { data: posts, isLoading } = useBlogPosts(ascending);
+
   const { mutate: deletePost } = useDeleteBlogPost();
 
   const [mode, setMode] = useState(null);
@@ -114,6 +146,21 @@ function AdminBlog() {
         </AddNewArticle>
       </div>
       <Posts>
+        <SortingButtonContainer>
+          <SortingButton onClick={() => setAscending((e) => !e)}>
+            <SortingButtonInner>
+              {ascending ? (
+                // from smallest to largest
+                <FontAwesomeIcon icon={faSortDown} />
+              ) : (
+                // from largest to smallest
+                <FontAwesomeIcon icon={faSortUp} />
+              )}
+              Sortează {ascending ? "descrescător" : "crescător"}
+            </SortingButtonInner>
+          </SortingButton>
+        </SortingButtonContainer>
+
         {posts?.map((post) => (
           <Post key={post.id}>
             <div>

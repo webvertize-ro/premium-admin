@@ -1,6 +1,9 @@
-import styled from 'styled-components';
-import Modal from './Modal';
-import DeleteModalInner from './DeleteModalInner';
+import styled from "styled-components";
+import Modal from "./Modal";
+import DeleteModalInner from "./DeleteModalInner";
+import { faReply } from "@fortawesome/free-solid-svg-icons";
+import ReplyModalInner from "./ReplyModalInner";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const StyledRequest = styled.div`
   display: flex;
@@ -45,16 +48,28 @@ const StyledButton = styled.button`
   background-color: #88304e;
 `;
 
+const ReplyButton = styled.button`
+  border: none;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  color: #fff;
+  background-color: #408a71;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+`;
+
 function Request({ name, email, message, date, id, onDelete, mutateSub }) {
-  // const formattedDate = new Intl.DateTimeFormat('ro-RO', {
-  //   timeZone: 'Europe/Bucharest',
-  //   year: 'numeric',
-  //   month: '2-digit',
-  //   day: '2-digit',
-  //   hour: '2-digit',
-  //   minute: '2-digit',
-  //   second: '2-digit',
-  // }).format(new Date(date));
+  const formattedDate = new Intl.DateTimeFormat("ro-RO", {
+    timeZone: "Europe/Bucharest",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  }).format(new Date(date));
 
   return (
     <StyledRequest className="mb-3">
@@ -81,10 +96,11 @@ function Request({ name, email, message, date, id, onDelete, mutateSub }) {
           <span>
             <strong>Dată: </strong>
           </span>
-          {/* <span>{formattedDate}</span> */}
+          <span>{formattedDate}</span>
         </StyledLi>
       </StyledUl>
       <ActionButtons>
+        {/* Delete Button */}
         <Modal>
           <Modal.Open opens="delete-confirmation">
             <StyledButton>Șterge</StyledButton>
@@ -97,7 +113,24 @@ function Request({ name, email, message, date, id, onDelete, mutateSub }) {
             <DeleteModalInner id={id} mutateSub={mutateSub} />
           </Modal.Window>
         </Modal>
-        {/* <button>Răspunde</button> */}
+        {/* Reply to Email Button */}
+        <Modal>
+          <Modal.Open opens="reply-modal">
+            <ReplyButton>
+              <div>
+                <FontAwesomeIcon icon={faReply} />
+              </div>
+              <div>Răspunde</div>
+            </ReplyButton>
+          </Modal.Open>
+          <Modal.Window
+            name="reply-modal"
+            title="Confirmare acțiune"
+            size="large"
+          >
+            <ReplyModalInner email={email} name={name} />
+          </Modal.Window>
+        </Modal>
       </ActionButtons>
     </StyledRequest>
   );
