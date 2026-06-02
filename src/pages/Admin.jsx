@@ -1,80 +1,263 @@
-import { useEffect, useState } from 'react';
-import Navigation from '../components/Navigation';
-import Request from '../components/Request';
-import styled from 'styled-components';
-import {
-  deleteSubmission,
-  getSubmissions,
-  subscribeToMessages,
-} from '../services/apiSubmission';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import supabase from '../services/supabase';
+// pages/Admin.jsx
+import { useEffect, useState } from "react";
+import { useContent } from "../hooks/useContent";
+import EditContentModal from "../components/EditContentModal";
+import LoadingSpinner from "../components/LoadingSpinner";
+import styled from "styled-components";
+import { c } from "../utils/content";
+import { pageLabels, sectionLabels } from "../utils/labels";
 
-const StyledAdmin = styled.div`
-  background-color: rgba(54, 85, 104, 1);
-  color: #fff;
+const SpinnerContainer = styled.div`
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
-const Container = styled.div`
-  padding: 1.25rem 0;
+const StyledAdmin = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  color: #fff;
+  position: relative;
+`;
+
+const Tabs = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  position: ${(props) => (props.isScrolled ? "fixed" : "absolute")};
+  top: 80px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  background-color: transparent;
+  background-color: rgba(255, 255, 255, 0.25);
+  z-index: 1000;
+  padding: 1.5rem;
+`;
+
+const ContentContainer = styled.div`
+  padding-top: 175px;
+`;
+
+const IndividualTab = styled.div`
+  border: 1px solid white;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: ${(props) => (props.selected ? "#fff" : "lightgrey")};
+  color: ${(props) => (props.selected ? "#000" : "#fff")};
+
+  &:hover {
+    cursor: pointer;
+    background-color: #fff;
+    color: #000;
+  }
+`;
+
+const Page = styled.div`
+  padding: 2rem;
+`;
+
+const SectionsContainer = styled.div`
   display: flex;
   flex-direction: column;
 `;
 
-const StyledH2 = styled.h2`
-  margin-bottom: 1.5rem;
+const Section = styled.div``;
+
+const SectionTitle = styled.div`
+  margin-left: 2rem;
+  margin-bottom: 0.5rem;
 `;
 
-export default function Admin() {
-  const queryClient = useQueryClient();
+const FieldsContainer = styled.div`
+  margin-left: 4rem;
+  border: 1px solid #fff;
+`;
 
-  // Retrieve the submissions initially with React Query
-  const { data: submissions = [], isPending } = useQuery({
-    queryKey: ['submissions'],
-    queryFn: () => getSubmissions(),
-  });
+const Field = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.25rem;
+  border-bottom: 1px solid #e5e7eb;
+`;
 
-  // Delete function
-  const { mutate: mutateSub, isPending: isDeleting } = useMutation({
-    mutationFn: deleteSubmission,
-    onError: (error) => console.error(error),
-  });
+const FieldContent = styled.div`
+  display: flex;
+  gap: 0.5rem;
+`;
 
-  // Live-subscription for submissions
+const EditButton = styled.button`
+  border: none;
+  padding: 0.5rem 2rem;
+  border-radius: 0.5rem;
+`;
+
+const Label = styled.div`
+  font-weight: bold;
+  display: flex;
+`;
+
+const Content = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 300;
+  line-break: anywhere;
+  padding: 0.5rem;
+  max-width: 100%;
+  overflow-wrap: break-word;
+`;
+
+const StyledImg = styled.img`
+  max-width: 80px;
+`;
+
+function Admin() {
+  const { grouped, isLoading } = useContent();
+  const [selectedPage, setSelectedPage] = useState("global");
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  console.log("grouped in Admin: ", grouped);
+
   useEffect(() => {
-    const channel = subscribeToMessages((payload) => {
-      if (payload.eventType === 'INSERT') {
-        queryClient.setQueryData(['submissions'], (old = []) => {
-          return [...old, payload.new];
-        });
-      }
+    if (localStorage.getItem("page")) {
+      setSelectedPage(localStorage.getItem("page"));
+    }
 
-      if (payload.eventType === 'DELETE') {
-        queryClient.setQueryData(['submissions'], (old) =>
-          old.filter((s) => s.id !== payload.old.id),
-        );
-      }
-    });
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0);
+    };
 
-    // Cleanup on unmount
-    return () => supabase.removeChannel(channel);
-  }, [queryClient, mutateSub]);
+    window.addEventListener("scroll", handleScroll);
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  function handleSelectedTab(page) {
+    if (localStorage.getItem("page")) {
+      setSelectedPage(localStorage.getItem("page"));
+    }
+
+    setSelectedPage(page);
+    // set the selected page in localStorage
+    localStorage.setItem("page", page);
+  }
+
+  const [editingField, setEditingField] = useState(null);
+  console.log("editingField: ", editingField);
+  if (isLoading) return <LoadingSpinner />;
+
+  const pages = Object.entries(grouped).map(([page]) => page);
 
   return (
-    <StyledAdmin>
-      <Container className="container">
-        <StyledH2>Solicitări primite</StyledH2>
-        {submissions.map((e) => (
-          <Request
-            name={e.name}
-            email={e.email}
-            message={e.message}
-            date={e.created_at}
-            id={e.id}
-            mutateSub={mutateSub}
-          />
-        ))}
-      </Container>
+    <StyledAdmin className="">
+      <div>
+        {/* Tabs */}
+        <Tabs isScrolled={isScrolled}>
+          {pages.map((p) => (
+            <>
+              <IndividualTab
+                onClick={() => handleSelectedTab(p)}
+                selected={p === selectedPage}
+              >
+                {pageLabels[p]}
+              </IndividualTab>
+            </>
+          ))}
+        </Tabs>
+        <ContentContainer>
+          <h2>Administrare conținut</h2>
+          {Object.entries(grouped).map(([page, sections]) => {
+            if (page === selectedPage) {
+              return (
+                <div>
+                  {/* level 1 - iterating over pages */}
+                  <Page key={page} className="mb-3">
+                    {/* level 2 - iterating over sections within each page */}
+                    <SectionsContainer>
+                      {Object.entries(sections).map(([section, fields]) => (
+                        <Section key={section} className="mb-2">
+                          <SectionTitle>
+                            Secțiunea: <strong>{sectionLabels[section]}</strong>
+                          </SectionTitle>
+                          {/* level 3 - iterating over individual fields within each section */}
+                          <FieldsContainer>
+                            {fields.map((field) => (
+                              <Field key={field.id}>
+                                <FieldContent>
+                                  <Label>{field.label}: </Label>
+                                  <Content>
+                                    {field.content_type === "image_url" ? (
+                                      <StyledImg
+                                        src={field.value}
+                                        alt={field.label}
+                                      />
+                                    ) : field.content_type === "pdf_url" ? (
+                                      field.value ? (
+                                        <a
+                                          href={field.value}
+                                          target="_blank"
+                                          rel="noreferrer"
+                                          style={{ color: "#fff" }}
+                                        >
+                                          Vizualizează PDF
+                                        </a>
+                                      ) : (
+                                        <span style={{ color: "#9ca3af" }}>
+                                          Niciun fișier încărcat
+                                        </span>
+                                      )
+                                    ) : field.content_type === "social_link" ? (
+                                      (() => {
+                                        try {
+                                          const parsed = JSON.parse(
+                                            field.value,
+                                          );
+                                          return `${parsed.platform} — ${parsed.url}`;
+                                        } catch {
+                                          return field.value;
+                                        }
+                                      })()
+                                    ) : (
+                                      field.value
+                                    )}
+                                  </Content>
+                                </FieldContent>
+                                <EditButton
+                                  onClick={() => setEditingField(field)}
+                                >
+                                  Editează
+                                </EditButton>
+                              </Field>
+                            ))}
+                          </FieldsContainer>
+                        </Section>
+                      ))}
+                    </SectionsContainer>
+                  </Page>
+                </div>
+              );
+            }
+          })}
+        </ContentContainer>
+      </div>
+
+      {editingField && (
+        <EditContentModal
+          field={editingField}
+          onClose={() => setEditingField(null)}
+        />
+      )}
     </StyledAdmin>
   );
 }
+
+export default Admin;

@@ -109,15 +109,15 @@ function Navigation() {
                   Administrare Blog
                 </StyledNavLink>
               </StyledLi>
-              {/* <StyledLi className="nav-item">
+              <StyledLi className="nav-item">
                 <StyledNavLink
                   className="nav-link"
                   aria-current="page"
-                  to="/admin-website"
+                  to="/admin"
                 >
                   Administrare conținut
                 </StyledNavLink>
-              </StyledLi> */}
+              </StyledLi>
             </ul>
           </div>
         </div>

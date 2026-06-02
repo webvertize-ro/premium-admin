@@ -1,10 +1,10 @@
-import styled from 'styled-components';
-import { logUserIn } from '../services/apiAuth';
-import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import LoadingSpinner from '../components/chat-admin/LoadingSpinner';
+import styled from "styled-components";
+import { logUserIn } from "../services/apiAuth";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import LoadingSpinner from "../components/chat-admin/LoadingSpinner";
 
 /**
  * 
@@ -39,11 +39,11 @@ function Login() {
   const { mutate: login, isPending } = useMutation({
     mutationFn: logUserIn,
     onSuccess: (data) => {
-      queryClient.setQueryData(['session'], data.user);
-      navigate('/chat');
+      queryClient.setQueryData(["session"], data.user);
+      navigate("/requests");
     },
     onError: (error) => {
-      toast.error(error.message || 'Invalid email or password');
+      toast.error(error.message || "Invalid email or password");
     },
   });
 
@@ -63,7 +63,7 @@ function Login() {
             type="email"
             name="email"
             className="form-control"
-            {...register('email')}
+            {...register("email")}
           />
         </div>
         <div className="mb-3">
@@ -74,7 +74,7 @@ function Login() {
             type="password"
             name="password"
             className="form-control"
-            {...register('password')}
+            {...register("password")}
           />
         </div>
         <StyledButton type="submit" className="btn btn-primary">

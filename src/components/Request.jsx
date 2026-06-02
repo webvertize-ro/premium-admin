@@ -123,11 +123,7 @@ function Request({ name, email, message, date, id, onDelete, mutateSub }) {
               <div>Răspunde</div>
             </ReplyButton>
           </Modal.Open>
-          <Modal.Window
-            name="reply-modal"
-            title="Confirmare acțiune"
-            size="large"
-          >
+          <Modal.Window name="reply-modal" title="Solicitare" size="large">
             <ReplyModalInner email={email} name={name} />
           </Modal.Window>
         </Modal>
