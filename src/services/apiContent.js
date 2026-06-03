@@ -93,3 +93,40 @@ export async function updateFileContent({ id, websiteId, key, file }) {
 
   return data;
 }
+
+export async function updateVideoContent({ id, websiteId, key, file }) {
+  const filePath = `${websiteId}/${key}`;
+
+  // 1. Delete the existing file
+  await supabase.storage.from("webiste-assets").remove([filePath]);
+
+  // 2. Upload the new video
+  const { error: uploadError } = await supabase.storage
+    .from("website-assets")
+    .upload(filePath, file, {
+      contentType: file.type,
+      upsert: true,
+    });
+
+  if (uploadError) throw new Error(uploadError.message);
+
+  // 3. Get the public URL
+  const { data: urlData } = supabase.storage
+    .from("website-assets")
+    .getPublicUrl(filePath);
+
+  // 4. Cache-busting timestamp
+  const publicUrl = `${urlData.publicUrl}?t=${Date.now()}`;
+
+  // 5. Update the content table
+  const { data, error } = await supabase
+    .from("content")
+    .update({ value: publicUrl })
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) throw new Error(error.message);
+
+  return data;
+}

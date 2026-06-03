@@ -1,10 +1,11 @@
 // components/EditContentModal.jsx
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   updateTextContent,
   updateImageContent,
   updateFileContent,
+  updateVideoContent,
 } from "../services/apiContent";
 import { useAuth } from "../context/AuthContext";
 import toast from "react-hot-toast";
@@ -143,6 +144,34 @@ const SaveBtn = styled.button`
   border-radius: 0.5rem;
 `;
 
+const VideoPreviewContainer = styled.div`
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+`;
+
+const VideoColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex: 1;
+  position: relative;
+`;
+
+const VideoColumnLabel = styled.div`
+  font-family: var(--font-family);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+`;
+
+const StyledVideo = styled.video`
+  width: 100%;
+  max-width: 200px;
+  border-radius: 8px;
+  background-color: var(--color-surface);
+`;
+
 function EditContentModal({ field, onClose }) {
   const { websiteId } = useAuth();
   const queryClient = useQueryClient();
@@ -156,6 +185,8 @@ function EditContentModal({ field, onClose }) {
   const [imageFile, setImageFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [pdfFile, setPdfFile] = useState(null);
+  const [videoFile, setVideoFile] = useState(null);
+  const [videoPreviewUrl, setVideoPreviewUrl] = useState(null);
 
   // state for social platform and URL (of that platform)
   const [socialPlatform, setSocialPlatform] = useState(
@@ -175,6 +206,8 @@ function EditContentModal({ field, onClose }) {
         return updateImageContent(variables);
       if (field?.content_type === "pdf_url")
         return updateFileContent(variables);
+      if (field?.content_type === "video_url")
+        return updateVideoContent(variables);
       return updateTextContent(variables);
     },
     onSuccess: () => {
@@ -200,6 +233,14 @@ function EditContentModal({ field, onClose }) {
     } else if (field?.content_type === "pdf_url") {
       if (!pdfFile) return toast.error("Selecteză un fișier PDF");
       saveContent({ id: field?.id, websiteId, key: field?.key, file: pdfFile });
+    } else if (field?.content_type === "video_url") {
+      if (!videoFile) return toast.error("Selectează un fișier video");
+      saveContent({
+        id: field?.id,
+        websiteId,
+        key: field?.key,
+        file: videoFile,
+      });
     } else if (field.content_type === "social_link") {
       // serialize back to JSON string before saving
       const value = JSON.stringify({
@@ -221,6 +262,13 @@ function EditContentModal({ field, onClose }) {
   ];
 
   const ref = useOutsideClick(field ? onClose : {});
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      if (videoPreviewUrl) URL.revokeObjectURL(videoPreviewUrl);
+    };
+  }, [previewUrl, videoPreviewUrl]);
 
   return (
     <Overlay>
@@ -315,6 +363,64 @@ function EditContentModal({ field, onClose }) {
                 onChange={(e) => {
                   setPdfFile(e.target.files[0]);
                   e.target.value = null;
+                }}
+              />
+            </UploadButtonContainer>
+          </div>
+        ) : field?.content_type === "video_url" ? (
+          <div>
+            <VideoPreviewContainer>
+              {/* Current video */}
+              {field?.value && (
+                <VideoColumn>
+                  <VideoColumnLabel>Video actual:</VideoColumnLabel>
+                  <StyledVideo src={field.value} controls muted />
+                </VideoColumn>
+              )}
+
+              {/* New video preview */}
+              {videoPreviewUrl && (
+                <VideoColumn>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <VideoColumnLabel>Video nou:</VideoColumnLabel>
+                    <DismissButton
+                      onClick={() => {
+                        setVideoPreviewUrl(null);
+                        setVideoFile(null);
+                      }}
+                    >
+                      <StyledFontAwesomeIcon icon={faXmark} />
+                    </DismissButton>
+                  </div>
+                  <StyledVideo src={videoPreviewUrl} controls muted />
+                </VideoColumn>
+              )}
+            </VideoPreviewContainer>
+
+            <UploadButtonContainer>
+              <StyledLabel htmlFor="video-file">
+                <span>
+                  <FontAwesomeIcon icon={faUpload} />
+                </span>
+                <span>Încarcă video</span>
+              </StyledLabel>
+              <StyledInput
+                id="video-file"
+                type="file"
+                accept="video/*"
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  if (!file) return;
+                  const url = URL.createObjectURL(file);
+                  setVideoPreviewUrl(url);
+                  setVideoFile(file);
+                  e.target.value = nulll;
                 }}
               />
             </UploadButtonContainer>
