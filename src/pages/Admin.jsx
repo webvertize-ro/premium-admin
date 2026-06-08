@@ -125,8 +125,6 @@ function Admin() {
   const [selectedPage, setSelectedPage] = useState("global");
   const [isScrolled, setIsScrolled] = useState(false);
 
-  console.log("grouped in Admin: ", grouped);
-
   useEffect(() => {
     if (localStorage.getItem("page")) {
       setSelectedPage(localStorage.getItem("page"));
@@ -152,7 +150,6 @@ function Admin() {
   }
 
   const [editingField, setEditingField] = useState(null);
-  console.log("editingField: ", editingField);
   if (isLoading) return <LoadingSpinner />;
 
   const pages = Object.entries(grouped).map(([page]) => page);

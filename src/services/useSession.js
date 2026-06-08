@@ -1,5 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
-import supabase from './supabase';
+import { useQuery } from "@tanstack/react-query";
+import supabase from "./supabase";
 
 async function getAuthenticatedUser() {
   // Check the localStorage
@@ -8,14 +8,13 @@ async function getAuthenticatedUser() {
 
   // Check on the server
   const { data, error } = await supabase.auth.getUser();
-  console.log('data in getAuthenticatedUser: ', data);
 
   return data.user;
 }
 
 export function useSession() {
   const { data: user, isPending } = useQuery({
-    queryKey: ['session'],
+    queryKey: ["session"],
     queryFn: getAuthenticatedUser,
   });
 

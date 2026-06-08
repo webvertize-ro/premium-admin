@@ -35,7 +35,7 @@ export async function updateImageContent({ id, websiteId, key, file }) {
 
   // 2. upload the new file
   const { error: uploadError } = await supabase.storage
-    .from("webiste-assets")
+    .from("website-assets")
     .upload(filePath, file);
 
   if (uploadError) throw new Error(uploadError.message);
@@ -98,7 +98,7 @@ export async function updateVideoContent({ id, websiteId, key, file }) {
   const filePath = `${websiteId}/${key}`;
 
   // 1. Delete the existing file
-  await supabase.storage.from("webiste-assets").remove([filePath]);
+  await supabase.storage.from("website-assets").remove([filePath]);
 
   // 2. Upload the new video
   const { error: uploadError } = await supabase.storage

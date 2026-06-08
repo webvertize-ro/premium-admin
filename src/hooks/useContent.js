@@ -7,8 +7,6 @@ import { useQuery } from "@tanstack/react-query";
 export function useContent() {
   const { websiteId } = useAuth();
 
-  console.log("websiteId in useContent Premium: ", websiteId);
-
   const { data, isLoading, error } = useQuery({
     queryKey: ["content", websiteId],
     queryFn: () => getContent(websiteId),
