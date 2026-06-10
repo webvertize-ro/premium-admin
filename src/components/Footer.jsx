@@ -1,13 +1,45 @@
 import styled from "styled-components";
 import { faCopyright } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useContent, useContentInner } from "../hooks/useContent";
+import { useContentInner } from "../hooks/useContent";
 import { c } from "../utils/content";
 
 const StyledFooter = styled.footer`
+  background: rgba(11, 34, 64, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-top: 1px solid rgba(168, 212, 245, 0.12);
+  padding: 0.75rem 1.5rem;
+  color: rgba(168, 212, 245, 0.6);
+  font-size: 0.78rem;
+`;
+
+const FooterInner = styled.div`
+  max-width: 1200px;
+  margin: 0 auto;
   display: flex;
-  background-color: #9db2bf;
-  padding: 0.5rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.25rem;
+  }
+`;
+
+const Copyright = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+`;
+
+const StyledFontAwesomeIcon = styled(FontAwesomeIcon)`
+  font-size: 0.9rem;
+  color: rgba(168, 212, 245, 0.5);
 `;
 
 const Container = styled.div`
@@ -15,40 +47,24 @@ const Container = styled.div`
   justify-content: space-between;
 `;
 
-const Copyright = styled.div`
-  display: flex;
-  gap: 0.5rem;
-`;
-
 const BusinessName = styled.div``;
 
 const Year = styled.div``;
 
-const StyledFontAwesomeIcon = styled(FontAwesomeIcon)`
-  font-size: 1.5rem;
-  color: #000;
-`;
-
 function Footer() {
-  const currentYear = new Date();
-  const year = currentYear.getFullYear();
-
+  const currentYear = new Date().getFullYear();
   const { contentMap } = useContentInner();
 
   return (
     <StyledFooter>
-      <Container className="container">
-        {/* Copyright */}
+      <FooterInner>
         <Copyright>
           <StyledFontAwesomeIcon icon={faCopyright} />
-          <p>Toate drepturile rezervate.</p>
+          <span>Toate drepturile rezervate.</span>
         </Copyright>
-        {/* Business Name  */}
-        <BusinessName>{c(contentMap, "global.brand_name")}</BusinessName>
-
-        {/* Year */}
-        <Year>{year}</Year>
-      </Container>
+        <span>{c(contentMap, "global.brand_name")}</span>
+        <span>{currentYear}</span>
+      </FooterInner>
     </StyledFooter>
   );
 }

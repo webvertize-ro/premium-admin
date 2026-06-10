@@ -17,47 +17,158 @@ import { faUpload, faX, faXmark } from "@fortawesome/free-solid-svg-icons";
 const Overlay = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  padding: 1rem;
 `;
 
 const Modal = styled.div`
-  background: #fff;
+  background: rgba(11, 34, 64, 0.97);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(168, 212, 245, 0.15);
   border-radius: 12px;
   padding: 1.5rem;
   width: 100%;
-  max-width: 480px;
+  max-width: 520px;
+  overflow-y: auto;
   position: relative;
+  color: #fff;
+
+  @media (max-width: 600px) {
+    padding: 1.25rem 1rem;
+    max-height: 85vh;
+  }
 `;
 
 const ModalTop = styled.div``;
 
 const CloseBtn = styled.button`
-  border: none;
-  background-color: transparent;
   position: absolute;
-  top: -0.5rem;
-  right: -0.25rem;
-  padding: 1rem;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: 1px solid rgba(168, 212, 245, 0.2);
+  border-radius: 6px;
+  color: rgba(168, 212, 245, 0.6);
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+  padding: 0;
+
+  &:hover {
+    background: rgba(168, 212, 245, 0.1);
+    color: #fff;
+  }
 `;
 
 const ModalTitle = styled.h5`
-  color: #000;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #fff;
+  margin: 0 0 0.25rem;
+  padding-right: 2rem;
 `;
 
-const StyledP = styled.p`
-  font-size: 12px;
-  color: #000;
+const FieldMeta = styled.p`
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(168, 212, 245, 0.45);
+  margin: 0 0 1.25rem;
 `;
 
 const StyledTextarea = styled.textarea`
-  border-radius: 0.5rem;
-  padding: 0.5rem;
   width: 100%;
+  padding: 0.6rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid rgba(168, 212, 245, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  resize: vertical;
+  margin-bottom: 1.25rem;
+  transition: border-color 0.15s ease;
+
+  &::placeholder {
+    color: rgba(168, 212, 245, 0.3);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: rgba(168, 212, 245, 0.5);
+    background: rgba(255, 255, 255, 0.09);
+  }
+`;
+
+const FieldLabel = styled.div`
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(168, 212, 245, 0.45);
+  margin-bottom: 0.35rem;
+`;
+
+const StyledSelect = styled.select`
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid rgba(168, 212, 245, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  font-size: 0.875rem;
   margin-bottom: 1rem;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+
+  option {
+    background: #0f2f5a;
+    color: #fff;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: rgba(168, 212, 245, 0.5);
+  }
+`;
+
+const StyledInput = styled.input`
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid rgba(168, 212, 245, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  font-size: 0.875rem;
+  margin-bottom: 1.25rem;
+  transition: border-color 0.15s ease;
+
+  &::placeholder {
+    color: rgba(168, 212, 245, 0.3);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: rgba(168, 212, 245, 0.5);
+    background: rgba(255, 255, 255, 0.09);
+  }
+`;
+
+const HiddenFileInput = styled.input`
+  display: none;
 `;
 
 const ImageChange = styled.div`
@@ -76,16 +187,23 @@ const NewImageText = styled.div`
 `;
 
 const DismissButton = styled.button`
-  background-color: transparent;
-  border: none;
-  position: absolute;
-  top: 0;
-  right: 0;
-  background-color: #dc2525;
+  background: rgba(220, 37, 37, 0.15);
+  border: 1px solid rgba(220, 37, 37, 0.35);
   border-radius: 50%;
-  color: #fff;
+  color: #f87171;
+  width: 22px;
+  height: 22px;
   display: flex;
-  padding: 0.25rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  flex-shrink: 0;
+
+  &:hover {
+    background: rgba(220, 37, 37, 0.3);
+  }
 `;
 
 const StyledFontAwesomeIcon = styled(FontAwesomeIcon)`
@@ -93,33 +211,40 @@ const StyledFontAwesomeIcon = styled(FontAwesomeIcon)`
 `;
 
 const StyledImg = styled.img`
-  max-width: 200px;
-  margin-bottom: 0.5rem;
-  border-radius: 0.5rem;
+  max-width: 160px;
+  border-radius: 6px;
+  border: 1px solid rgba(168, 212, 245, 0.15);
+  display: block;
+  margin-top: 0.4rem;
 `;
 
 const UploadButtonContainer = styled.div`
   display: flex;
 `;
 
-const StyledLabel = styled.label`
-  display: flex;
-  gap: 0.25rem;
-  font-size: 1.2rem;
-  color: black;
-  border-radius: 0.5rem;
-  padding: 0.5rem;
-  background-color: #68808e;
-  color: #fff;
+const UploadLabel = styled.label`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  border: 1px solid rgba(168, 212, 245, 0.3);
+  background: transparent;
+  color: rgba(168, 212, 245, 0.8);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+  margin-bottom: 1.25rem;
 
   &:hover {
-    cursor: pointer;
+    background: rgba(168, 212, 245, 0.1);
+    color: #fff;
   }
-`;
-
-const StyledInput = styled.input`
-  margin-bottom: 1rem;
-  display: none;
 `;
 
 const ActionButtonsContainer = styled.div`
@@ -129,19 +254,55 @@ const ActionButtonsContainer = styled.div`
 `;
 
 const CancelBtn = styled.button`
-  background-color: #88304e;
-  color: #fff;
-  border: none;
-  padding: 0.5rem 1.5rem;
-  border-radius: 0.5rem;
+  padding: 0.45rem 1.25rem;
+  border-radius: 6px;
+  border: 1px solid rgba(168, 212, 245, 0.2);
+  background: transparent;
+  color: rgba(168, 212, 245, 0.6);
+  font-size: 0.78;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background: rgba(168, 212, 245, 0.08);
+    color: rgba(168, 212, 245, 0.9);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
 `;
 
 const SaveBtn = styled.button`
-  background-color: #285a48;
+  padding: 0.45rem 1.25rem;
+  border-radius: 6px;
+  border: 1px solid rgba(168, 212, 245, 0.4);
+  background: rgba(168, 212, 245, 0.14);
   color: #fff;
-  border: none;
-  padding: 0.5rem 1.5rem;
-  border-radius: 0.5rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background: rgba(168, 212, 245, 0.22);
+    border-color: rgba(168, 212, 245, 0.6);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
 `;
 
 const VideoPreviewContainer = styled.div`
@@ -159,10 +320,36 @@ const VideoColumn = styled.div`
 `;
 
 const VideoColumnLabel = styled.div`
-  font-family: var(--font-family);
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--color-text-secondary);
+  font-size: 0.72;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(168, 212, 245, 0.45);
+`;
+
+const CurrentPdfLink = styled.a`
+  display: inline-block;
+  font-size: 0.85rem;
+  color: #a8d4f5;
+  text-decoration: none;
+  margin-bottom: 1rem;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+const SelectedFile = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: rgba(168, 212, 245, 0.8);
+  margin-bottom: 0.75rem;
+
+  strong {
+    color: #fff;
+  }
 `;
 
 const StyledVideo = styled.video`
@@ -261,7 +448,7 @@ function EditContentModal({ field, onClose }) {
     { value: "tiktok", label: "TikTok" },
   ];
 
-  const ref = useOutsideClick(field ? onClose : {});
+  const ref = useOutsideClick(onClose);
 
   useEffect(() => {
     return () => {
@@ -279,10 +466,9 @@ function EditContentModal({ field, onClose }) {
           </CloseBtn>
           <ModalTitle>{field?.label}</ModalTitle>
         </ModalTop>
-        <StyledP>
-          <strong>Conținutul editat: </strong>
+        <FieldMeta>
           {field?.page} › {field?.section}
-        </StyledP>
+        </FieldMeta>
 
         {field?.content_type === "text" ? (
           <StyledTextarea
@@ -292,8 +478,8 @@ function EditContentModal({ field, onClose }) {
           />
         ) : field?.content_type === "social_link" ? (
           <div>
-            <label>Platformă</label>
-            <select
+            <FieldLabel>Platformă</FieldLabel>
+            <StyledSelect
               value={socialPlatform}
               onChange={(e) => setSocialPlatform(e.target.value)}
             >
@@ -302,10 +488,10 @@ function EditContentModal({ field, onClose }) {
                   {opt.label}
                 </option>
               ))}
-            </select>
+            </StyledSelect>
 
-            <label>Link</label>
-            <input
+            <FieldLabel>Link</FieldLabel>
+            <StyledInput
               type="url"
               value={socialUrl}
               onChange={(e) => setSocialUrl(e.target.value)}
@@ -316,47 +502,32 @@ function EditContentModal({ field, onClose }) {
           <div>
             {field?.value && (
               <div className="mb-2">
-                <div className="text-dark mb-1">Fișier actual:</div>
-                <a
+                <FieldLabel>Fișier actual:</FieldLabel>
+                <CurrentPdfLink
                   href={field.value}
                   target="_blank"
                   rel="noreferrer"
-                  style={{ color: "#1b3c53", fontSize: "13px" }}
                 >
                   Vizualizează PDF actual
-                </a>
+                </CurrentPdfLink>
               </div>
             )}
 
             {pdfFile && (
-              <div
-                className="mb-2"
-                style={{ fontSize: "13px", color: "#285a48" }}
-              >
+              <SelectedFile>
                 Fișier selectat: <strong>{pdfFile.name}</strong>
-                <button
-                  onClick={() => setPdfFile(null)}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    color: "#dc2525",
-                    cursor: "pointer",
-                    marginLeft: "0.5rem",
-                  }}
-                >
-                  ✕
-                </button>
-              </div>
+                <DismissButton onClick={() => setPdfFile(null)}>
+                  <StyledFontAwesomeIcon icon={faXmark} />
+                </DismissButton>
+              </SelectedFile>
             )}
 
             <UploadButtonContainer>
-              <StyledLabel htmlFor="pdf-file">
-                <span>
-                  <FontAwesomeIcon icon={faUpload} />
-                </span>
+              <UploadLabel htmlFor="pdf-file">
+                <FontAwesomeIcon icon={faUpload} />
                 <span>Încarcă PDF</span>
-              </StyledLabel>
-              <StyledInput
+              </UploadLabel>
+              <HiddenFileInput
                 id="pdf-file"
                 type="file"
                 accept="application/pdf"
@@ -404,13 +575,13 @@ function EditContentModal({ field, onClose }) {
             </VideoPreviewContainer>
 
             <UploadButtonContainer>
-              <StyledLabel htmlFor="video-file">
+              <UploadLabel htmlFor="video-file">
                 <span>
                   <FontAwesomeIcon icon={faUpload} />
                 </span>
                 <span>Încarcă video</span>
-              </StyledLabel>
-              <StyledInput
+              </UploadLabel>
+              <HiddenFileInput
                 id="video-file"
                 type="file"
                 accept="video/*"
@@ -420,47 +591,47 @@ function EditContentModal({ field, onClose }) {
                   const url = URL.createObjectURL(file);
                   setVideoPreviewUrl(url);
                   setVideoFile(file);
-                  e.target.value = nulll;
+                  e.target.value = null;
                 }}
               />
             </UploadButtonContainer>
           </div>
         ) : (
           <div>
-            <ImageChange className="mb-2">
+            <ImageChange>
               <CurrentImage>
-                <div className="text-dark">Imaginea actuala: </div>
-
-                <StyledImg
-                  src={field?.value}
-                  alt={field?.label}
-                  className="img-fluid"
-                />
+                <FieldLabel>Imaginea actuala: </FieldLabel>
+                <StyledImg src={field?.value} alt={field?.label} />
               </CurrentImage>
+
               {previewUrl && (
                 <NewImage>
-                  <div className="d-flex justify-content-between ">
-                    <NewImageText className="text-dark">
-                      Noua imagine:{" "}
-                    </NewImageText>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <FieldLabel>Imagine nouă</FieldLabel>
                     <DismissButton onClick={() => setPreviewUrl("")}>
                       <StyledFontAwesomeIcon icon={faXmark} />
                     </DismissButton>
                   </div>
 
-                  <StyledImg src={previewUrl} alt="" className="img-fluid" />
+                  <StyledImg src={previewUrl} alt="" />
                 </NewImage>
               )}
             </ImageChange>
 
             <UploadButtonContainer>
-              <StyledLabel htmlFor="image">
+              <UploadLabel htmlFor="image">
                 <span>
                   <FontAwesomeIcon icon={faUpload} />
                 </span>
                 <span>Încarcă imagine</span>
-              </StyledLabel>
-              <StyledInput
+              </UploadLabel>
+              <HiddenFileInput
                 id="image"
                 type="file"
                 accept="image/*"

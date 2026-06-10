@@ -1,51 +1,141 @@
-import React from "react";
+import React, { useState } from "react";
 import Logo from "./Logo";
 import styled from "styled-components";
 import { NavLink } from "react-router-dom";
 
 const NavContainer = styled.div`
-  /* background-color: green; */
+  position: sticky;
+  top: 0;
+  z-index: 101;
+  width: 100%;
 `;
 
 const StyledNav = styled.nav`
-  /* glassmorphism effect */
-  height: 80px;
-  padding: 0;
+  position: sticky;
+  top: 0;
   z-index: 101;
-  font-size: 0.9rem;
-  background-color: rgba(255, 255, 255, 0.25);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(3px);
-  -webkit-backdrop-filter: blur(3px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  width: 100%;
+  background: rgba(11, 34, 64, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(168, 212, 245, 0.15);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+`;
+
+const NavInner = styled.div`
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  padding: 0 1.5rem;
+  gap: 1rem;
 
   @media (max-width: 992px) {
-    height: unset;
-    padding: 0.5rem;
+    flex-wrap: wrap;
+    height: auto;
+    padding: 0.75rem 1rem;
+  }
+`;
+
+const NavLinks = styled.ul`
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  height: 64px;
+  gap: 0.25rem;
+
+  @media (max-width: 992px) {
+    display: ${({ $open }) => ($open ? "flex" : "none")};
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    height: auto;
+    padding: 0.5rem 0 0.75rem;
+    gap: 0;
+    order: 3;
   }
 `;
 
 const StyledLi = styled.li`
   display: flex;
   align-items: center;
-  height: 100%;
-  transition: all 0.2s ease;
+  height: 64px;
 
-  &:hover {
-    background-color: #fff;
-    cursor: pointer;
+  @media (max-width: 992px) {
+    height: auto;
+    width: 100%;
   }
 `;
 
 const StyledNavLink = styled(NavLink)`
-  font-weight: 500;
-  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(168, 212, 245, 0.8);
   height: 100%;
   display: flex;
   align-items: center;
+  padding: 0 1rem;
+  text-decoration: none;
+  border-bottom: 3px solid transparent;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+
+  &:hover {
+    color: #a8d4f5;
+    border-bottom-color: rgba(168, 212, 245, 0.4);
+  }
+
   &.active {
-    background-color: #fff;
-    color: #000;
+    color: #fff;
+    border-bottom-color: #a8d4f5;
+  }
+
+  @media (max-width: 992px) {
+    height: auto;
+    width: 100%;
+    padding: 0.6rem 0.75rem;
+    border-bottom: none;
+    border-left: 3px solid transparent;
+
+    &:hover {
+      border-bottom: none;
+      border-left-color: rgba(168, 212, 245, 0.4);
+    }
+
+    &.active {
+      border-bottom: none;
+      border-left-color: #a8d4f5;
+    }
+  }
+`;
+
+const MobileToggle = styled.button`
+  display: none;
+  background: none;
+  border: 1px solid rgba(168, 212, 245, 0.3);
+  border-radius: 6px;
+  color: #a8d4f5;
+  padding: 0.4rem 0.6rem;
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: rgba(168, 212, 245, 0.1);
+  }
+
+  @media (max-width: 992px) {
+    display: flex;
+    align-items: center;
   }
 `;
 
@@ -59,68 +149,33 @@ const LogoutButton = styled.button`
 `;
 
 function Navigation() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
     <NavContainer>
-      <StyledNav className="navbar navbar-expand-lg">
-        <div className="container h-100">
-          <a className="navbar-brand" href="#">
+      <StyledNav>
+        <NavInner>
+          <a href="#">
             <Logo />
           </a>
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span className="navbar-toggler-icon"></span>
-          </button>
-          <div
-            className="collapse navbar-collapse h-100"
-            id="navbarSupportedContent"
-          >
-            <ul className="navbar-nav me-auto mb-2 mb-lg-0 h-100">
-              <StyledLi StyledLiclassName="nav-item">
-                <StyledNavLink
-                  className="nav-link"
-                  aria-current="page"
-                  to="/admin"
-                >
-                  Solicitări
-                </StyledNavLink>
-              </StyledLi>
-              <StyledLi StyledLiclassName="nav-item">
-                <StyledNavLink
-                  className="nav-link"
-                  aria-current="page"
-                  to="/chat"
-                >
-                  Chat Live
-                </StyledNavLink>
-              </StyledLi>
-              <StyledLi StyledLiclassName="nav-item">
-                <StyledNavLink
-                  className="nav-link"
-                  aria-current="page"
-                  to="/blog"
-                >
-                  Administrare Blog
-                </StyledNavLink>
-              </StyledLi>
-              <StyledLi className="nav-item">
-                <StyledNavLink
-                  className="nav-link"
-                  aria-current="page"
-                  to="/admin"
-                >
-                  Administrare conținut
-                </StyledNavLink>
-              </StyledLi>
-            </ul>
-          </div>
-        </div>
+          <MobileToggle onClick={() => setMenuOpen((prev) => !prev)}>
+            {menuOpen ? "✕" : "☰"}
+          </MobileToggle>
+          <NavLinks $open={menuOpen}>
+            <StyledLi>
+              <StyledNavLink to="/requests">Solicitări</StyledNavLink>
+            </StyledLi>
+            <StyledLi>
+              <StyledNavLink to="/chat">Chat Live</StyledNavLink>
+            </StyledLi>
+            <StyledLi>
+              <StyledNavLink to="/blog">Blog</StyledNavLink>
+            </StyledLi>
+            <StyledLi>
+              <StyledNavLink to="/admin">Conținut</StyledNavLink>
+            </StyledLi>
+          </NavLinks>
+        </NavInner>
       </StyledNav>
     </NavContainer>
   );
