@@ -11,59 +11,108 @@ import { useState } from "react";
 import LoadingSpinner from "./LoadingSpinner";
 
 const StyledMessageSender = styled.div`
-  background-color: #144272;
-  color: #fff;
-  padding: 0.5rem;
+  background: rgba(11, 34, 64, 0.85);
+  border-top: 1px solid rgba(168, 212, 245, 0.1);
+  padding: 0.6rem 0.75rem;
+  flex-shrink: 0;
+`;
+
+const AttachementPreview = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.5rem;
+  margin-bottom: 0.5rem;
+  background: rgba(168, 212, 245, 0.06);
+  border: 1px solid rgba(168, 212, 245, 0.12);
+  border-radius: 6px;
+`;
+
+const DismissAttachment = styled.button`
+  background: transparent;
+  border: none;
+  color: rgba(168, 212, 245, 0.5);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  margin-left: auto;
+  flex-shrink: 0;
+  transition: color 0.15s ease;
+  &:hover {
+    color: #fca5a5;
+  }
+`;
+
+const PreviewImg = styled.img`
+  border-radius: 4px;
+  border: 1px solid rgba(168, 212, 245, 0.15);
+  display: block;
+`;
+
+const AttachmentName = styled.div`
+  font-size: 0.78rem;
+  color: rgba(168, 212, 245, 0.7);
+  white-space: nowrap;
+  overflow: hidden;
+  text-decoration: ellipsis;
+  min-width: 0;
+`;
+
+const DocumentIcon = styled.div`
+  color: rgba(168, 212, 245, 0.6);
+  font-size: 1.1rem;
+  flex-shrink: 0;
 `;
 
 const StyledForm = styled.form`
   display: grid;
-  grid-template-columns: 1fr 12fr 1fr;
+  grid-template-columns: auto 1fr auto;
   gap: 0.5rem;
-`;
-
-const PreviewFile = styled.div`
-  display: flex;
-  flex-direction: column;
   align-items: center;
-  padding: 0.5rem;
 `;
 
-const StyledButton = styled.button`
-  background: transparent;
-  border: none;
-  align-self: end;
+const MessageInput = styled.input`
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid rgba(168, 212, 245, 0.2);
+  background: rgba(255, 255, 255, 0.6);
+  font-size: 0.875rem;
+  transition: border-color 0.15s ease;
+
+  &::placeholder {
+    color: #fff;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: rgba(168, 212, 245, 0.5);
+    background: rgba(255, 255, 255, 0.09);
+  }
 `;
-
-const PreviewImgContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-`;
-
-const PreviewImg = styled.img``;
-
-const Document = styled.a`
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  color: #000;
-`;
-
-const StyledFontAwesomeIcon = styled(FontAwesomeIcon)`
-  font-size: 1.5rem;
-`;
-
-const Input = styled.input``;
 
 const FileLabel = styled.label`
-  font-size: 1.5rem;
   display: flex;
-  justify-content: center;
   align-items: center;
-  background-color: #132440;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 6px;
+  border: 1px solid rgba(168, 212, 245, 0.2);
+  background: transparent;
+  color: rgba(168, 212, 245, 0.6);
+  font-size: 1rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+
+  &:hover {
+    background: rgba(168, 212, 245, 0.08);
+    color: rgba(168, 212, 245, 0.9);
+  }
 `;
 
 const FileInput = styled.input`
@@ -71,16 +120,32 @@ const FileInput = styled.input`
 `;
 
 const SendButton = styled.button`
-  background-color: transparent;
-  border: none;
-  font-size: 1.5rem;
   display: flex;
-  justify-content: center;
   align-items: center;
-  color: #fff;
-  background-color: #132440;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 6px;
+  border: 1px solid rgba(168, 212, 245, 0.3);
+  background: rgba(168, 212, 245, 0.12);
+  color: rgba(168, 212, 245, 0.9);
+  font-size: 1rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background: rgba(168, 212, 245, 0.2);
+    border-color: rgba(168, 212, 245, 0.2);
+    color: #fff;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 `;
 
 function MessageSender({ selectedUser, mutateMsg, isSending, scrollToBottom }) {
@@ -88,70 +153,60 @@ function MessageSender({ selectedUser, mutateMsg, isSending, scrollToBottom }) {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [attachmentHasImage, setAttachmentHasImage] = useState(null);
 
-  const { register, handleSubmit, reset, formState } = useForm();
-
-  const { errors } = formState;
-
-  if (errors) {
-    console.log(errors);
-  }
+  const { register, handleSubmit, reset } = useForm();
 
   function handleFileSelect(file) {
-    setAttachmentHasImage(file?.type?.startsWith("image/") || false);
     if (!file) return;
     setAttachment(file);
+    const isImage = file.type.startsWith("image/");
+    setAttachmentHasImage(isImage);
+    setPreviewUrl(isImage ? URL.createObjectURL(file) : null);
+  }
 
-    // create a URL if the file is an image
-    if (file.type.startsWith("image/")) {
-      const fileURL = URL.createObjectURL(file);
-      setPreviewUrl(fileURL);
-    } else {
-      setPreviewUrl(null);
-    }
+  function handleDismissAttachment() {
+    setAttachment(null);
+    setPreviewUrl(null);
+    setAttachmentHasImage(false);
   }
 
   function onSubmit(data) {
-    const message = {
+    mutateMsg({
       ...data,
       user_id: selectedUser,
       sender_type: "admin",
       document: attachment,
-    };
+    });
 
     reset();
     setAttachment(null);
+    setPreviewUrl(null);
+    setAttachmentHasImage(false);
     setTimeout(() => scrollToBottom(), attachmentHasImage ? 2000 : 1500);
-    mutateMsg(message);
   }
 
-  function onError(errors) {
-    console.log(errors);
-  }
   return (
     <StyledMessageSender>
       {attachment && (
-        <PreviewFile>
-          <StyledButton onClick={() => setAttachment(null)}>
-            <FontAwesomeIcon icon={faXmark} />
-          </StyledButton>
-          {/* image || document */}
-          {attachment?.type.startsWith("image/") ? (
-            <PreviewImgContainer>
-              <PreviewImg src={previewUrl} width="60" className="img-fluid" />
-              <div>{attachment.name}</div>
-            </PreviewImgContainer>
+        <AttachementPreview>
+          {attachmentHasImage ? (
+            <PreviewImg src={previewUrl} width="48" height="48" />
           ) : (
-            <Document href={"cool_file.pdf"}>
-              <StyledFontAwesomeIcon icon={faFile} />
-              <div>{attachment.name}</div>
-            </Document>
+            <DocumentIcon>
+              <FontAwesomeIcon icon={faFile} />
+            </DocumentIcon>
           )}
-        </PreviewFile>
+          <AttachmentName>{attachment.name}</AttachmentName>
+          <DismissAttachment onClick={handleDismissAttachment}>
+            <FontAwesomeIcon icon={faXmark} />
+          </DismissAttachment>
+        </AttachementPreview>
       )}
-      <StyledForm onSubmit={handleSubmit(onSubmit, onError)}>
+
+      <StyledForm onSubmit={handleSubmit(onSubmit)}>
         <FileLabel htmlFor="document">
           <FontAwesomeIcon icon={faPaperclip} />
         </FileLabel>
+
         <FileInput
           type="file"
           id="document"
@@ -162,18 +217,14 @@ function MessageSender({ selectedUser, mutateMsg, isSending, scrollToBottom }) {
             e.target.value = null;
           }}
         />
-        <Input
+        <MessageInput
           type="text"
           {...register("message")}
-          className="form-control"
           placeholder="Scrieți răspunsul aici..."
         />
-        <SendButton type="submit">
-          {isSending ? (
-            <LoadingSpinner color="dark" />
-          ) : (
-            <FontAwesomeIcon icon={faPaperPlane} />
-          )}
+        <SendButton type="submit" disabled={isSending}>
+          <FontAwesomeIcon icon={isSending ? null : faPaperPlane} />
+          {isSending && <LoadingSpinner color="light" />}
         </SendButton>
       </StyledForm>
     </StyledMessageSender>

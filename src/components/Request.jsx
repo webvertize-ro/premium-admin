@@ -6,38 +6,90 @@ import ReplyModalInner from "./ReplyModalInner";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const StyledRequest = styled.div`
-  display: flex;
-  align-items: center;
-  border: 2px solid grey;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  gap: 1.25rem;
   padding: 1.25rem;
-  border-radius: 1rem;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 16px;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  background: rgba(15, 47, 90, 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(168, 212, 245, 0.1);
+  transition: border-color 0.2s ease;
+
+  &:hover {
+    border-color: rgba(168, 212, 245, 0.2);
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const StyledUl = styled.ul`
   padding: 0;
   margin: 0;
+  list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
-  list-style: none;
-  width: 100%;
+  gap: 0.3rem;
+  min-width: 0;
 `;
 
 const StyledLi = styled.li`
-  padding: 0.25rem;
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.5;
+  overflow-wrap: break-word;
+  word-break: break-word;
+`;
+
+const FieldLabel = styled.span`
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: rgba(168, 212, 245, 0.45);
+  margin-right: 0.4rem;
 `;
 
 const ActionButtons = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  margin-left: auto;
+  flex-shrink: 0;
+
+  @media (max-width: 600px) {
+    flex-direction: row;
+  }
+`;
+
+const DeleteButton = styled.button`
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  background: transparent;
+  color: rgba(248, 113, 113, 0.8);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+  white-space: nowrap;
+
+  &:hover:not(:disabled) {
+    background: rgba(248, 113, 114, 0.12);
+    color: #fca5a5;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
 `;
 
 const StyledButton = styled.button`
@@ -49,18 +101,32 @@ const StyledButton = styled.button`
 `;
 
 const ReplyButton = styled.button`
-  border: none;
-  padding: 0.75rem;
-  border-radius: 0.5rem;
-  color: #fff;
-  background-color: #408a71;
   display: flex;
-  gap: 0.5rem;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+  border: 1px solid rgba(168, 212, 245, 0.3);
+  background: transparent;
+  color: rgba(168, 212, 245, 0.8);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+  white-space: nowrap;
+
+  &:hover {
+    background: rgba(168, 212, 245, 0.1);
+    color: #fff;
+  }
 `;
 
-function Request({ name, email, message, date, id, onDelete, mutateSub }) {
+function Request({ name, email, message, date, id, mutateSub }) {
   const formattedDate = new Intl.DateTimeFormat("ro-RO", {
     timeZone: "Europe/Bucharest",
     year: "numeric",
@@ -72,38 +138,30 @@ function Request({ name, email, message, date, id, onDelete, mutateSub }) {
   }).format(new Date(date));
 
   return (
-    <StyledRequest className="mb-3">
+    <StyledRequest>
       <StyledUl>
-        <StyledLi className="list-group-item">
-          <span>
-            <strong>Nume: </strong>
-          </span>
-          <span>{name}</span>
+        <StyledLi>
+          <FieldLabel>Nume</FieldLabel>
+          {name}
         </StyledLi>
-        <StyledLi class="StyledList-group-item">
-          <span>
-            <strong>Email: </strong>
-          </span>
-          <span>{email}</span>
+        <StyledLi>
+          <FieldLabel>Email</FieldLabel>
+          {email}
         </StyledLi>
-        <StyledLi class="list-group-item">
-          <span>
-            <strong>Mesaj: </strong>
-          </span>
-          <span>{message}</span>
+        <StyledLi>
+          <FieldLabel>Mesaj: </FieldLabel>
+          {message}
         </StyledLi>
-        <StyledLi class="list-group-item">
-          <span>
-            <strong>Dată: </strong>
-          </span>
-          <span>{formattedDate}</span>
+        <StyledLi>
+          <FieldLabel>Dată: </FieldLabel>
+          {formattedDate}
         </StyledLi>
       </StyledUl>
       <ActionButtons>
         {/* Delete Button */}
         <Modal>
           <Modal.Open opens="delete-confirmation">
-            <StyledButton>Șterge</StyledButton>
+            <DeleteButton>Șterge</DeleteButton>
           </Modal.Open>
           <Modal.Window
             name="delete-confirmation"
@@ -117,10 +175,8 @@ function Request({ name, email, message, date, id, onDelete, mutateSub }) {
         <Modal>
           <Modal.Open opens="reply-modal">
             <ReplyButton>
-              <div>
-                <FontAwesomeIcon icon={faReply} />
-              </div>
-              <div>Răspunde</div>
+              <FontAwesomeIcon icon={faReply} />
+              <span>Răspunde</span>
             </ReplyButton>
           </Modal.Open>
           <Modal.Window name="reply-modal" title="Solicitare" size="large">

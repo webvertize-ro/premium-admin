@@ -9,14 +9,19 @@ import { sendMessage } from "../../services/apiMessages";
 
 const StyledChat = styled.div`
   display: grid;
-  grid-template-columns: 1fr 3fr;
-  align-self: stretch;
+  grid-template-columns: 260px 1fr;
   height: 100%;
+  min-height: 0;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 function Chat() {
   const [selectedUser, setSelectedUser] = useState(null);
   const queryClient = useQueryClient();
+  const [navOpen, setNavOpen] = useState(false);
 
   // Initial fetch with React Query (for users)
   const { data: users, isPending: isLoadingUsers } = useQuery({
@@ -34,7 +39,7 @@ function Chat() {
 
     // Cleanup on unmount
     return () => supabase.removeChannel(channel);
-  }, [queryClient, selectedUser]);
+  }, [queryClient]);
 
   // Sending the message
   const { mutate: mutateMsg, isPending: isSending } = useMutation({
@@ -51,6 +56,8 @@ function Chat() {
         onSelectedUser={setSelectedUser}
         isLoadingUsers={isLoadingUsers}
         selectedUser={selectedUser}
+        navOpen={navOpen}
+        setNavOpen={setNavOpen}
       />
       {/* Right side with a chat window (users & messages) */}
       <ChatWindow
@@ -58,6 +65,7 @@ function Chat() {
         onSelectedUser={setSelectedUser}
         mutateMsg={mutateMsg}
         isSending={isSending}
+        setNavOpen={setNavOpen}
       />
     </StyledChat>
   );

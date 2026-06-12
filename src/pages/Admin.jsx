@@ -4,8 +4,8 @@ import { useContent } from "../hooks/useContent";
 import EditContentModal from "../components/EditContentModal";
 import LoadingSpinner from "../components/LoadingSpinner";
 import styled from "styled-components";
-import { c } from "../utils/content";
 import { pageLabels, sectionLabels } from "../utils/labels";
+import { PageHeading } from "../shared/shared";
 
 const SpinnerContainer = styled.div`
   height: 60vh;
@@ -155,17 +155,6 @@ const ContentContainer = styled.div`
   @media (max-width: 768px) {
     padding-top: 100px;
   }
-`;
-
-const PageHeading = styled.h2`
-  font-size: 1rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(168, 212, 245, 0.5);
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid rgba(168, 212, 245, 0.1);
 `;
 
 const IndividualTab = styled.div`

@@ -13,28 +13,36 @@ import { faComments } from "@fortawesome/free-solid-svg-icons";
 const StyledChatWindow = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  background-color: #fff;
+  background: rgba(7, 22, 47, 0.5);
+  height: 100%;
+  min-height: 0;
 `;
 
 const IntroMessage = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: 1.2rem;
+  justify-content: center;
   gap: 1rem;
+  height: 100%;
+  font-size: 0.88rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: rgba(168, 212, 245, 0.3);
+  text-align: center;
+  padding: 2rem;
 `;
 
 const StyledFontAwesomeIcon = styled(FontAwesomeIcon)`
-  font-size: 2rem;
-  color: #0f828c;
+  font-size: 2.5rem;
+  color: rgba(168, 212, 245, 0.2);
 `;
 
 const ConversationWindow = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  justify-content: center;
+  min-height: 0;
 `;
 
 function ChatWindow({ selectedUser, mutateMsg, onSelectedUser, isSending }) {
@@ -81,7 +89,7 @@ function ChatWindow({ selectedUser, mutateMsg, onSelectedUser, isSending }) {
   }, [selectedUser]);
 
   return (
-    <StyledChatWindow $selectedUser={selectedUser}>
+    <StyledChatWindow>
       {!selectedUser && (
         <IntroMessage>
           <StyledFontAwesomeIcon icon={faComments} />
@@ -91,8 +99,10 @@ function ChatWindow({ selectedUser, mutateMsg, onSelectedUser, isSending }) {
       {selectedUser && (
         <ConversationWindow>
           <UserInfo user={user} onSelectedUser={onSelectedUser} />
+
           {/* Messages */}
           <Messages messages={messages} user={user} inputRef={inputRef} />
+
           {/* Message Sender */}
           <MessageSender
             selectedUser={selectedUser}

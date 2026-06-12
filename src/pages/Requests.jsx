@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Navigation from "../components/Navigation";
 import Request from "../components/Request";
 import styled from "styled-components";
@@ -9,20 +9,31 @@ import {
 } from "../services/apiSubmission";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import supabase from "../services/supabase";
+import { PageHeading } from "../shared/shared";
 
 const StyledAdmin = styled.div`
-  background-color: rgba(54, 85, 104, 1);
   color: #fff;
+  min-height: calc(100vh - 64px - 41px);
 `;
 
 const Container = styled.div`
-  padding: 1.25rem 0;
+  padding: 2rem 0;
   display: flex;
   flex-direction: column;
+  gap: 1rem;
+
+  @media (max-width: 768px) {
+    padding: 1rem 0;
+  }
 `;
 
-const StyledH2 = styled.h2`
-  margin-bottom: 1.5rem;
+const EmptyState = styled.div`
+  text-align: center;
+  padding: 3rem 1rem;
+  color: rgba(168, 212, 245, 0.35);
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 `;
 
 export default function Requests() {
@@ -63,17 +74,22 @@ export default function Requests() {
   return (
     <StyledAdmin>
       <Container className="container">
-        <StyledH2>Solicitări primite</StyledH2>
-        {submissions.map((e) => (
-          <Request
-            name={e.name}
-            email={e.email}
-            message={e.message}
-            date={e.created_at}
-            id={e.id}
-            mutateSub={mutateSub}
-          />
-        ))}
+        <PageHeading>Solicitări primite</PageHeading>
+        {submissions.length === 0 ? (
+          <EmptyState>Nicio solicitare primită</EmptyState>
+        ) : (
+          submissions.map((e) => (
+            <Request
+              key={e.id}
+              name={e.name}
+              email={e.email}
+              message={e.message}
+              date={e.created_at}
+              id={e.id}
+              mutateSub={mutateSub}
+            />
+          ))
+        )}
       </Container>
     </StyledAdmin>
   );

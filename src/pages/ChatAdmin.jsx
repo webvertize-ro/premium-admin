@@ -1,20 +1,15 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import getUsers from "../services/apiUsers";
-import { useEffect, useState } from "react";
-import { subscribeToUsers } from "../services/apiUsers";
-import supabase from "../services/supabase";
-import VerticalNavbar from "../components/chat-admin/VerticalNavbar";
 import styled from "styled-components";
-import ChatWindow from "../components/chat-admin/ChatWindow";
 import Chat from "../components/chat-admin/Chat";
 
 const StyledChatAdmin = styled.div`
-  height: 100%;
+  height: calc(100vh - 64px - 41px);
+  display: flex;
+  flex-direction: column;
 `;
 
 function ChatAdmin() {
   return (
-    <StyledChatAdmin className="container">
+    <StyledChatAdmin>
       <Chat />
     </StyledChatAdmin>
   );

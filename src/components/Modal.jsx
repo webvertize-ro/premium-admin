@@ -13,92 +13,83 @@ import styled from "styled-components";
 import { useOutsideClick } from "../hooks/useOutsideClick";
 
 const StyledModal = styled.div`
-  width: ${(props) => (props.size === "small" ? "300px" : "450px")};
+  width: ${({ $size }) => ($size === "small" ? "320px" : "480px")};
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: ${(props) =>
-    props.bgColor ? props.bgColor : "rgba(74, 112, 137, 0.75)"};
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(8.7px);
-  -webkit-backdrop-filter: blur(8.7px);
-  border: 1px solid rgba(74, 112, 137, 0.01);
-  box-shadow:
-    0,
-    2.4rem 3.2rem rgba(0, 0, 0, 0.12);
-  border-radius: 1rem;
-  transition: all 0.5s;
-  z-index: 91;
+  background: rgba(11, 34, 64, 0.97);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(168, 212, 245, 0.15);
+  border-radius: 12px;
+  z-index: 103;
   color: #fff;
-  border: 0.5px solid rgba(255, 255, 255, 0.5);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
 
   @media (max-width: 576px) {
-    width: 320px;
+    width: calc(100vw - 2rem);
+    max-height: 85vh;
   }
+`;
+
+const ModalContent = styled.div`
+  overflow-y: auto;
+  padding: 0 1rem 1rem;
+  flex: 1;
 `;
 
 const Header = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  position: relative;
-  padding: 1rem;
-  /* border-bottom: 1px solid grey; */
-  color: #fff;
-`;
-
-const ModalContent = styled.div`
-  max-height: 750px;
-
-  @media (max-width: 576px) {
-    /* max-height: 550px; */
-    /* overflow-y: scroll; */
-    max-height: 525px;
-    overflow: scroll;
-  }
-
-  @media (max-width: 992px) {
-    /* overflow-y: scroll; */
-  }
+  padding: 1rem 1rem 0.75rem;
+  border-bottom: 1px solid rgba(168, 212, 245, 0.1);
+  flex-shrink: 0;
 `;
 
 const StyledH4 = styled.h4`
   margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #fff;
+
   @media (max-width: 576px) {
-    font-size: 1rem;
+    font-size: 0.85rem;
   }
 `;
 
 const Overlay = styled.div`
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.3);
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
   backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   z-index: 102;
-  transition: all 0.5s;
 `;
 
-const Button = styled.button`
-  background: none;
-  border: none;
-  padding: 0.2rem;
-  border-radius: 5px;
-  transition: all 0.2s;
+const CloseButton = styled.button`
+  background: transparent;
+  border: 1px solid rgba(168, 212, 245, 0.2);
+  border-radius: 6px;
+  color: rgba(168, 212, 245, 0.6);
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
-  color: #fff;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
 
   &:hover {
-    background-color: #2a4657;
-  }
-
-  & svg {
-    width: 1.2rem;
-    height: 1.2rem;
+    background: rgba(168, 212, 245, 0.1);
     color: #fff;
   }
 `;
@@ -140,21 +131,19 @@ function Window({
 }) {
   const { openName, close } = useContext(ModalContext);
 
-  // const ref = useOutsideClick(lightboxOpen || openName ? {} : close);
-  const ref = useOutsideClick(lightboxOpen ? {} : openName ? close : {});
+  const ref = useOutsideClick(lightboxOpen ? () => {} : close);
 
   if (name !== openName) return null;
 
   return createPortal(
     <Overlay>
-      <StyledModal ref={ref} bgColor={bgColor} size={size}>
+      <StyledModal ref={ref} size={size}>
         <Header>
           <StyledH4>{title}</StyledH4>
-          <Button onClick={close}>
+          <CloseButton onClick={close}>
             <FontAwesomeIcon icon={faXmark} />
-          </Button>
+          </CloseButton>
         </Header>
-
         <ModalContent>
           {cloneElement(children, { onCloseModal: close })}
         </ModalContent>

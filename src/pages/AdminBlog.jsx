@@ -204,7 +204,7 @@ function AdminBlog() {
         onClose={handleClose}
         title={
           mode === "create"
-            ? "Creare postare bllog"
+            ? "Creare postare blog"
             : mode === "edit"
               ? "Editare postare blog"
               : "Ștergere postare blog"
