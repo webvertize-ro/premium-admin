@@ -30,6 +30,8 @@ const EditButton = styled.button`
 `;
 
 function DeleteConfirm({ post, onClose }) {
+  console.log("post in DeleteConfirm: ", post);
+
   const { mutate: deletePost } = useDeleteBlogPost();
 
   function handleConfirm() {
@@ -46,8 +48,8 @@ function DeleteConfirm({ post, onClose }) {
     <div>
       <div>
         <StyledP>
-          Ești sigur că vrei să ștergi articolul <strong>"{post.title}"</strong>
-          ?
+          Ești sigur că vrei să ștergi articolul{" "}
+          <strong>"{post?.title}"</strong>?
         </StyledP>
       </div>
       <div>

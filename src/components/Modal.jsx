@@ -126,18 +126,23 @@ function Window({
   name,
   title = "Solicită o ofertă",
   lightboxOpen,
-  bgColor,
   size,
+  isOpen,
+  onClose: onCloseProp,
 }) {
-  const { openName, close } = useContext(ModalContext);
+  const { openName, close: closeCtx } = useContext(ModalContext);
+
+  const isControlled = isOpen !== undefined;
+  const shouldRender = isControlled ? isOpen : name === openName;
+  const close = isControlled ? onCloseProp : closeCtx;
 
   const ref = useOutsideClick(lightboxOpen ? () => {} : close);
 
-  if (name !== openName) return null;
+  if (!shouldRender) return null;
 
   return createPortal(
     <Overlay>
-      <StyledModal ref={ref} size={size}>
+      <StyledModal ref={ref} $size={size}>
         <Header>
           <StyledH4>{title}</StyledH4>
           <CloseButton onClick={close}>

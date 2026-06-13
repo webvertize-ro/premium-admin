@@ -59,6 +59,7 @@ const UploadImageLabel = styled.label`
 `;
 
 function BlogPostForm({ post, onClose, onCloseModal }) {
+  console.log("post in BlogPostForm: ", post);
   const isEditing = !!post;
   const { register, handleSubmit, watch, setValue } = useForm({
     defaultValues: post ?? {
@@ -120,6 +121,9 @@ function BlogPostForm({ post, onClose, onCloseModal }) {
             onError: () => toast.error("Eroare la actualizare"),
           },
         );
+        setTimeout(() => {
+          onCloseModal();
+        }, 1500);
       } else {
         createPost(postData, {
           onSuccess: () => {
@@ -128,6 +132,9 @@ function BlogPostForm({ post, onClose, onCloseModal }) {
           },
           onError: () => toast.error("Eroare la creare"),
         });
+        setTimeout(() => {
+          onCloseModal();
+        }, 1500);
       }
     } catch (error) {
       toast.error(error.message);
