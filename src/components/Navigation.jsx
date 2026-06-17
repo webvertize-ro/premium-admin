@@ -61,6 +61,37 @@ const NavLinks = styled.ul`
   }
 `;
 
+const NavRight = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  @media (max-width: 992px) {
+    order: 2;
+  }
+`;
+
+const LogoutButton = styled.button`
+  padding: 0.35rem 0.9rem;
+  border-radius: 6px;
+  border: 1px solid rgba(168, 212, 245, 0.45);
+  background: transparent;
+  color: rgba(168, 212, 245, 0.45);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+
+  &:hover {
+    background: rgba(168, 212, 245, 0.1);
+    color: #fff;
+  }
+`;
+
 const StyledLi = styled.li`
   display: flex;
   align-items: center;
@@ -139,15 +170,6 @@ const MobileToggle = styled.button`
   }
 `;
 
-const LogoutButton = styled.button`
-  border: none;
-  border-radius: 0.5rem;
-  padding: 0.5rem 1.25rem;
-  text-transform: uppercase;
-  background-color: #88304e;
-  color: #fff;
-`;
-
 function Navigation() {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -175,6 +197,16 @@ function Navigation() {
               <StyledNavLink to="/admin">Conținut</StyledNavLink>
             </StyledLi>
           </NavLinks>
+          <NavRight>
+            <LogoutButton
+              onClick={() => {
+                localStorage.removeItem("token");
+                window.location.href = "/";
+              }}
+            >
+              Deconectare
+            </LogoutButton>
+          </NavRight>
         </NavInner>
       </StyledNav>
     </NavContainer>
