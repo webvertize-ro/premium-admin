@@ -25,6 +25,22 @@ export async function updateTextContent({ id, value }) {
   return data;
 }
 
+// Function to update just the display width of an image row (currently
+// used for the logo) — writes to the "width" column, separate from the
+// "value" column that holds the image URL itself.
+export async function updateContentWidth({ id, width }) {
+  const { data, error } = await supabase
+    .from("content")
+    .update({ width })
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) throw new Error(error.message);
+
+  return data;
+}
+
 // Function to update the website's image content
 
 export async function updateImageContent({ id, websiteId, key, file }) {

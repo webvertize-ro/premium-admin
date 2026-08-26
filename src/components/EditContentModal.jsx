@@ -6,6 +6,7 @@ import {
   updateImageContent,
   updateFileContent,
   updateVideoContent,
+  updateContentWidth,
 } from "../services/apiContent";
 import { useAuth } from "../context/AuthContext";
 import toast from "react-hot-toast";
@@ -359,9 +360,26 @@ const StyledVideo = styled.video`
   background-color: var(--color-surface);
 `;
 
+const WidthSection = styled.div`
+  margin-top: 0.75rem;
+`;
+
+const WidthHint = styled.p`
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.45);
+  margin: -0.9rem 0 1.25rem;
+`;
+
+const MIN_LOGO_WIDTH = 40;
+const MAX_LOGO_WIDTH = 400;
+const DEFAULT_LOGO_WIDTH = 160;
+
 function EditContentModal({ field, onClose }) {
   const { websiteId } = useAuth();
   const queryClient = useQueryClient();
+
+  const isLogo = field?.content_type === "image_url" && field?.key === "logo";
+
   // parse the existing JSON value for social_link fields
   const parsedSocial =
     field.content_type === "social_link"
@@ -380,6 +398,10 @@ function EditContentModal({ field, onClose }) {
     parsedSocial?.platform || "facebook",
   );
   const [socialUrl, setSocialUrl] = useState(parsedSocial?.url || "");
+  const [widthValue, setWidthValue] = useState(
+    field?.width != null ? String(field.width) : String(DEFAULT_LOGO_WIDTH),
+  );
+  const [isSavingGroup, setIsSavingGroup] = useState(false);
 
   function handleFileSelect(file) {
     const url = URL.createObjectURL(file);
@@ -408,7 +430,50 @@ function EditContentModal({ field, onClose }) {
     },
   });
 
-  function handleSave() {
+  async function handleSave() {
+    // The logo's display width lives on the same row as the image
+    // itself (content.width), so saving the logo can mean up to two
+    // writes — the image (storage + value) and the width column —
+    // done together as one action with one toast/close.
+    if (isLogo) {
+      const currentWidth =
+        field?.width != null ? String(field.width) : String(DEFAULT_LOGO_WIDTH);
+      const widthChanged = String(widthValue) !== currentWidth;
+
+      if (!imageFile && !widthChanged) {
+        toast.error("Nicio modificare de salvat");
+        return;
+      }
+
+      const clampedWidth = Math.min(
+        MAX_LOGO_WIDTH,
+        Math.max(MIN_LOGO_WIDTH, Number(widthValue) || DEFAULT_LOGO_WIDTH),
+      );
+
+      setIsSavingGroup(true);
+      try {
+        if (imageFile) {
+          await updateImageContent({
+            id: field?.id,
+            websiteId,
+            key: field?.key,
+            file: imageFile,
+          });
+        }
+        if (widthChanged) {
+          await updateContentWidth({ id: field?.id, width: clampedWidth });
+        }
+        queryClient.invalidateQueries({ queryKey: ["content", websiteId] });
+        toast.success("Conținut actualizat!");
+        onClose();
+      } catch (error) {
+        toast.error(error.message || "Eroare la actualizare");
+      } finally {
+        setIsSavingGroup(false);
+      }
+      return;
+    }
+
     if (field?.content_type === "image_url") {
       if (!imageFile) return toast.error("Selectează o imagine");
       saveContent({
@@ -456,6 +521,8 @@ function EditContentModal({ field, onClose }) {
       if (videoPreviewUrl) URL.revokeObjectURL(videoPreviewUrl);
     };
   }, [previewUrl, videoPreviewUrl]);
+
+  const isBusy = isPending || isSavingGroup;
 
   return (
     <Overlay>
@@ -641,15 +708,31 @@ function EditContentModal({ field, onClose }) {
                 }}
               />
             </UploadButtonContainer>
+
+            {isLogo && (
+              <WidthSection>
+                <FieldLabel>Lățime afișată (px)</FieldLabel>
+                <StyledInput
+                  type="number"
+                  min={MIN_LOGO_WIDTH}
+                  max={MAX_LOGO_WIDTH}
+                  value={widthValue}
+                  onChange={(e) => setWidthValue(e.target.value)}
+                />
+                <WidthHint>
+                  Înălțimea se ajustează automat, păstrând proporțiile imaginii.
+                </WidthHint>
+              </WidthSection>
+            )}
           </div>
         )}
 
         <ActionButtonsContainer>
-          <CancelBtn onClick={onClose} disabled={isPending}>
+          <CancelBtn onClick={onClose} disabled={isBusy}>
             Anulează
           </CancelBtn>
-          <SaveBtn onClick={handleSave} disabled={isPending}>
-            {isPending ? "Se salvează..." : "Salvează"}
+          <SaveBtn onClick={handleSave} disabled={isBusy}>
+            {isBusy ? "Se salvează..." : "Salvează"}
           </SaveBtn>
         </ActionButtonsContainer>
       </Modal>
